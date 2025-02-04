@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import CurrentDate from "./components/CurrentDate";
-
+import countryCodeLookup from "country-code-lookup";
 function App() {
   const [city, setCity] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [weather, setWeather] = useState(null);
   const [geoLocation, setGeoLocation] = useState([0, 0]); // [lat, lon]
-  // const backendUrl = 'https://breezy-1073093010663.northamerica-northeast2.run.app';
+  const backendUrl = 'http://localhost:8080';
+
+  const getCountryName = (countryCode) => {
+    const country = countryCodeLookup.byIso(countryCode.toUpperCase());
+    return country ? country.country : "Country code not found";
+  }
   // Use JS navigator.geolocation to get device location
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -25,7 +30,7 @@ function App() {
   async function fetchWeather() {
     try {
         if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
-            const weatherUrl = `/getWeather?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
+            const weatherUrl = `${backendUrl}/getWeather?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
             const weatherResponse = await fetch(weatherUrl);
             
             if (!weatherResponse.ok) {
@@ -33,6 +38,7 @@ function App() {
             }
 
             const weatherData = await weatherResponse.json();
+            console.log(weatherData)
             setWeather(weatherData);
         } else {
             console.warn("Invalid geolocation data");
@@ -45,10 +51,11 @@ function App() {
   //fetch geolation with city using openweathermap api
   async function fetchGeoLocationByCity() {
     try {
-      const geoUrl = `/getGeolocation?city=${city}`;
+      const geoUrl = `${backendUrl}/getGeolocation?city=${city}`;
       const geoResponse = await fetch(geoUrl);
       const geoData = await geoResponse.json();
       setGeoLocation([geoData[0].lat, geoData[0].lon]);
+      console.log(geoData)
       if (geoData.length === 0) {
         throw new Error("Location not found");
       }
@@ -142,7 +149,8 @@ function App() {
           <div className="date-weather">
             <CurrentDate />
             <div>
-              {weather?.name ? `${weather.name}${city ? `, ${city}` : ""}` : "No name"}
+              <h1>{weather? `${getCountryName(weather.sys.country)}` : ""}</h1>
+              {weather?.name ? `${weather.name}${city ? `${city}` : ""}` : "No name"}
             </div>
             <div>
               <h1>{weather?.main?.temp ? `${weather.main.temp}°C` : "Loading..."}</h1>

@@ -8,9 +8,8 @@ const cors = require('cors');
 const path = require('path');
 
 const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+
+app.use(cors());
 
 const apiKey = process.env.OPENWEATHERMAP_API_KEY;
 app.get("/getGeolocation", async (req, res) => {
@@ -20,7 +19,7 @@ app.get("/getGeolocation", async (req, res) => {
           return res.status(400).json({ error: "City is required" });
         }
     
-        const url = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
+        const url = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`;
         const response = await axios.get(url);
         res.json(response.data);
       } catch (error) {
@@ -43,4 +42,8 @@ app.get("/getWeather", async (req, res) => {
         console.error("Error fetching weather data:", error.message);
         res.status(500).json({ error: "Failed to fetch weather data" });
       }
+});
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });
