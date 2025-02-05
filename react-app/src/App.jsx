@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import CurrentDate from "./components/CurrentDate";
 import countryCodeLookup from "country-code-lookup";
+import LocationDate from "./components/LocationDate";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWater,faWind } from "@fortawesome/free-solid-svg-icons";
 function App() {
   const [city, setCity] = useState("");
   const [searchValue, setSearchValue] = useState("");
@@ -147,10 +150,13 @@ function App() {
         />
         <div>
           <div className="date-weather">
+            <p>Local time/date:</p>
             <CurrentDate />
+            <p>Time/date in {city}</p>
+            {weather? <LocationDate timezoneOffset={weather.timezone} city={city}/> : "Loading Time"}
             <div>
               <h1>{weather? `${getCountryName(weather.sys.country)}` : ""}</h1>
-              {weather?.name ? `${weather.name}${city ? `${city}` : ""}` : "No name"}
+              {weather?.name ? `${city ? `${city}` : ""}` : "No City name"}
             </div>
             <div>
               <h1>{weather?.main?.temp ? `${weather.main.temp}°C` : "Loading..."}</h1>
@@ -158,6 +164,7 @@ function App() {
                 <div>
                   <p>High: {weather.main.temp_max}°C</p>
                   <p>Low: {weather.main.temp_min}°C</p>
+                  <p>Feels Like: {weather.main.feels_like}°C</p>
                 </div>
               )}
             </div>
@@ -179,12 +186,11 @@ function App() {
           </div>
           <div className="feels-humidity">
             <div>
-              <p>{weather?.main?.feels_like ? `Feels Like: ${weather.main.feels_like}°C` : ""}</p>
-            </div>
-            <div>
+              <FontAwesomeIcon icon={faWater}/>
               <p>{weather?.main?.humidity ? `Humidity: ${weather.main.humidity}%` : ""}</p>
             </div>
             <div>
+              <FontAwesomeIcon icon={faWind}/>
               <p>{weather?.wind?.speed ? `Wind Speed: ${weather.wind.speed} km/h` : ""}</p>
             </div>
           </div>
