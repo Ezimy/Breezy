@@ -5,10 +5,10 @@ import LocationDate from "./components/LocationDate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWater,faWind } from "@fortawesome/free-solid-svg-icons";
 function App() {
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("No City In useState Yet");
   const [searchValue, setSearchValue] = useState("");
   const [weather, setWeather] = useState(null);
-  const [geoLocation, setGeoLocation] = useState([0, 0]); // [lat, lon]
+  const [geoLocation, setGeoLocation] = useState([44.0051, -79.3795]); // [lat, lon]
   const backendUrl = 'http://localhost:8080';
 
   const getCountryName = (countryCode) => {
@@ -28,7 +28,27 @@ function App() {
       );
     }
   };
+  //Fetch city data by geolocation
+  async function fetchCityByGeolocation() {
+    try {
+        if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
+            const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
+            const cityResponse = await fetch(url);
+            
+            if (!cityResponse.ok) {
+                throw new Error(`API error: ${cityResponse.statusText}`);
+            }
 
+            const cityData = await cityResponse.json();
+            console.log(cityData)
+            setCity(cityData[0].name)
+        } else {
+            console.warn("Invalid geolocation data");
+        }
+    } catch (err) {
+        console.error("Error fetching weather:", err);
+    }
+}
   // Fetch weather data by geolocation
   async function fetchWeather() {
     try {
@@ -69,7 +89,7 @@ function App() {
 
   // Event handler for search input
   const handleSearch = () => {
-    setCity(searchValue);
+    setCity(searchValue.charAt(0).toUpperCase() + searchValue.slice(1));
   };
 
   // Fetch user's location on component mount
@@ -84,6 +104,7 @@ function App() {
     if (geoLocation[0] !== 0 && geoLocation[1] !== 0) {
       fetchWeather();
     }
+    fetchCityByGeolocation()
   }, [geoLocation]);
 
   // Fetch geolocation by city whenever city updates
@@ -92,7 +113,6 @@ function App() {
       fetchGeoLocationByCity();
     }
   }, [city]);
-
   // Function to determine background class based on weather condition
   function getBackgroundClass(weatherCondition) {
     if (!weatherCondition) return "bg-default";
@@ -150,10 +170,16 @@ function App() {
         />
         <div>
           <div className="date-weather">
-            <p>Local time/date:</p>
-            <CurrentDate />
-            <p>Time/date in {city}</p>
-            {weather? <LocationDate timezoneOffset={weather.timezone} city={city}/> : "Loading Time"}
+            <div className="dates">
+              <div>
+                <p>Local time/date:</p>
+                <CurrentDate />
+              </div>
+              <div>
+                <p>Time/date in {city}</p>
+                {weather? <LocationDate timezoneOffset={weather.timezone} city={city}/> : "Loading Time"}
+              </div>
+            </div>
             <div>
               <h1>{weather? `${getCountryName(weather.sys.country)}` : ""}</h1>
               {weather?.name ? `${city ? `${city}` : ""}` : "No City name"}

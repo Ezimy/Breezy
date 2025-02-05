@@ -43,6 +43,21 @@ app.get("/getWeather", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch weather data" });
       }
 });
+//get city from geolocation
+app.get("/getCityByGeolocation" , async (req, res) => {
+  try{
+    const { lat, lon } = req.query;
+    if (!lat || !lon) {
+      return res.status(400).json({ error: "Latitude and Longitude are required" });
+    }
+    const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`;
+    const response = await axios.get(url);
+    res.json(response.data)
+  } catch(error){
+    console.error("Error fetching city:", error.message);
+    res.status(500).json({error: "Failed to fetch city data"})
+  }
+});
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

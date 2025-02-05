@@ -56,7 +56,7 @@ const LocationDate = ({timezoneOffset,city}) => {
             }
 
             setDateTime({
-                day: localDate.getDay(),
+                day: localDate.getDate(),
                 month: localDate.getMonth(),
                 year: localDate.getFullYear(),
                 time: formatTime(localDate),
@@ -70,8 +70,9 @@ const LocationDate = ({timezoneOffset,city}) => {
     }, [timezoneOffset]);
   return (
     <div>
-        <p>{monthNames[dateTime.month]} {dateTime.day} {dateTime.year}</p>
         <p>{dateTime.time}</p>
+        <p>{dayNames[dateTime.day]}</p>
+        <p>{monthNames[dateTime.month]} {dateTime.day} {dateTime.year}</p>
     </div>
   )
 }

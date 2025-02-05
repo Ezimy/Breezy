@@ -26,6 +26,11 @@ body {
     @apply text-lg sm:text-2xl;
   }
 }
+.dates{
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
 
 .feels-humidity {
   @apply flex flex-row space-x-3 text-center text-base sm:text-2xl p-4 rounded-4xl;

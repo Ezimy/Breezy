@@ -49,9 +49,9 @@ const CurrentDate = () => {
   return (
     <div>
       <p>{formatTime(currentDate)}</p>
+      <p>{dayNames[currentDate.getDay()]}</p>
       <p>
-        {dayNames[currentDate.getDay()]} {monthNames[currentDate.getMonth()]} {currentDate.getDate()}{" "}
-        {currentDate.getFullYear()}
+        {monthNames[currentDate.getMonth()]} {currentDate.getDate()} {currentDate.getFullYear()}
       </p>
     </div>
   );
