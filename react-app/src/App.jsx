@@ -4,11 +4,13 @@ import countryCodeLookup from "country-code-lookup";
 import LocationDate from "./components/LocationDate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWater,faWind } from "@fortawesome/free-solid-svg-icons";
+import ForecastWeather from "./components/ForecastWeather";
 function App() {
   const [city, setCity] = useState("No City In useState Yet");
   const [searchValue, setSearchValue] = useState("");
   const [weather, setWeather] = useState(null);
-  const [geoLocation, setGeoLocation] = useState([44.0051, -79.3795]); // [lat, lon]
+  const [geoLocation, setGeoLocation] = useState([0,0]); // [lat, lon]
+  const [forecastWeather, setForecastWeather] = useState(null)
   const backendUrl = 'http://localhost:8080';
 
   const getCountryName = (countryCode) => {
@@ -40,7 +42,6 @@ function App() {
             }
 
             const cityData = await cityResponse.json();
-            console.log(cityData)
             setCity(cityData[0].name)
         } else {
             console.warn("Invalid geolocation data");
@@ -61,7 +62,6 @@ function App() {
             }
 
             const weatherData = await weatherResponse.json();
-            console.log(weatherData)
             setWeather(weatherData);
         } else {
             console.warn("Invalid geolocation data");
@@ -78,7 +78,6 @@ function App() {
       const geoResponse = await fetch(geoUrl);
       const geoData = await geoResponse.json();
       setGeoLocation([geoData[0].lat, geoData[0].lon]);
-      console.log(geoData)
       if (geoData.length === 0) {
         throw new Error("Location not found");
       }
@@ -87,6 +86,27 @@ function App() {
     }
   }
 
+  //fetch hourly weather with geolocation using openweathermapapi
+  async function fetchForecastWeather() {
+    try {
+      if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
+          const weatherUrl = `${backendUrl}/getForecastWeather?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
+          const weatherResponse = await fetch(weatherUrl);
+          
+          if (!weatherResponse.ok) {
+              throw new Error(`API error: ${weatherResponse.statusText}`);
+          }
+
+          const weatherData = await weatherResponse.json();
+          console.log(weatherData)
+          setForecastWeather(weatherData)
+      } else {
+          console.warn("Invalid geolocation data");
+      }
+    } catch (err) {
+        console.error("Error fetching weather:", err);
+    }
+  }
   // Event handler for search input
   const handleSearch = () => {
     setCity(searchValue.charAt(0).toUpperCase() + searchValue.slice(1));
@@ -113,6 +133,7 @@ function App() {
       fetchGeoLocationByCity();
     }
   }, [city]);
+  fetchForecastWeather();
   // Function to determine background class based on weather condition
   function getBackgroundClass(weatherCondition) {
     if (!weatherCondition) return "bg-default";
@@ -180,6 +201,7 @@ function App() {
                 {weather? <LocationDate timezoneOffset={weather.timezone} city={city}/> : "Loading Time"}
               </div>
             </div>
+            {forecastWeather? <ForecastWeather {...forecastWeather}/> : 'Forecast Loading'}
             <div>
               <h1>{weather? `${getCountryName(weather.sys.country)}` : ""}</h1>
               {weather?.name ? `${city ? `${city}` : ""}` : "No City name"}
@@ -210,7 +232,7 @@ function App() {
               )}
             </div>
           </div>
-          <div className="feels-humidity">
+          <div className="humidity-wind">
             <div>
               <FontAwesomeIcon icon={faWater}/>
               <p>{weather?.main?.humidity ? `Humidity: ${weather.main.humidity}%` : ""}</p>

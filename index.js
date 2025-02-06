@@ -12,22 +12,7 @@ const port = process.env.PORT || 8080;
 app.use(cors());
 
 const apiKey = process.env.OPENWEATHERMAP_API_KEY;
-app.get("/getGeolocation", async (req, res) => {
-    try {
-        const { city } = req.query;
-        if (!city) {
-          return res.status(400).json({ error: "City is required" });
-        }
-    
-        const url = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`;
-        const response = await axios.get(url);
-        res.json(response.data);
-      } catch (error) {
-        console.error("Error fetching geolocation:", error.message);
-        res.status(500).json({ error: "Failed to fetch geolocation data" });
-      }
-});
-
+//get weather
 app.get("/getWeather", async (req, res) => {
     try {
         const { lat, lon } = req.query;
@@ -42,6 +27,22 @@ app.get("/getWeather", async (req, res) => {
         console.error("Error fetching weather data:", error.message);
         res.status(500).json({ error: "Failed to fetch weather data" });
       }
+});
+//Call 5 day / 3 hour forecast data
+app.get("/getForecastWeather", async (req, res) => {
+  try {
+      const { lat, lon } = req.query;
+      if (!lat || !lon) {
+        return res.status(400).json({ error: "Latitude and Longitude are required" });
+      }
+  
+      const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      const response = await axios.get(url);
+      res.json(response.data);
+    } catch (error) {
+      console.error("Error fetching hourly weather data:", error.message);
+      res.status(500).json({ error: "Failed to fetch hourly weather data" });
+    }
 });
 //get city from geolocation
 app.get("/getCityByGeolocation" , async (req, res) => {
@@ -58,7 +59,22 @@ app.get("/getCityByGeolocation" , async (req, res) => {
     res.status(500).json({error: "Failed to fetch city data"})
   }
 });
-
+//get geolocation
+app.get("/getGeolocation", async (req, res) => {
+  try {
+      const { city } = req.query;
+      if (!city) {
+        return res.status(400).json({ error: "City is required" });
+      }
+  
+      const url = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`;
+      const response = await axios.get(url);
+      res.json(response.data);
+    } catch (error) {
+      console.error("Error fetching geolocation:", error.message);
+      res.status(500).json({ error: "Failed to fetch geolocation data" });
+    }
+});
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
