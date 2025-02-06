@@ -3,7 +3,7 @@ import CurrentDate from "./components/CurrentDate";
 import countryCodeLookup from "country-code-lookup";
 import LocationDate from "./components/LocationDate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWater,faWind } from "@fortawesome/free-solid-svg-icons";
+import { faWater, faWind } from "@fortawesome/free-solid-svg-icons";
 import ForecastWeather from "./components/ForecastWeather";
 function App() {
   const hasMountedGeoLocation = useRef(false);
@@ -11,14 +11,14 @@ function App() {
   const [city, setCity] = useState("No City In useState Yet");
   const [searchValue, setSearchValue] = useState("");
   const [weather, setWeather] = useState(null);
-  const [geoLocation, setGeoLocation] = useState([null,null]); // [lat, lon]
-  const [forecastWeather, setForecastWeather] = useState(null)
-  const backendUrl = 'http://localhost:8080';
+  const [geoLocation, setGeoLocation] = useState([null, null]); // [lat, lon]
+  const [forecastWeather, setForecastWeather] = useState(null);
+  const backendUrl = "http://localhost:8080";
 
   const getCountryName = (countryCode) => {
     const country = countryCodeLookup.byIso(countryCode.toUpperCase());
     return country ? country.country : "Country code not found";
-  }
+  };
   // Use JS navigator.geolocation to get device location
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -27,7 +27,6 @@ function App() {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
           setGeoLocation([lat, lon]);
-
         },
         (error) => console.error("Geolocation error:", error)
       );
@@ -36,43 +35,43 @@ function App() {
   //Fetch city data by geolocation
   async function fetchCityByGeolocation() {
     try {
-        if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
-            const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
-            const cityResponse = await fetch(url);
-            
-            if (!cityResponse.ok) {
-                throw new Error(`API error: ${cityResponse.statusText}`);
-            }
+      if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
+        const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
+        const cityResponse = await fetch(url);
 
-            const cityData = await cityResponse.json();
-            setCity(cityData[0].name)
-        } else {
-            console.warn("Invalid geolocation data");
+        if (!cityResponse.ok) {
+          throw new Error(`API error: ${cityResponse.statusText}`);
         }
+
+        const cityData = await cityResponse.json();
+        setCity(cityData[0].name);
+      } else {
+        console.warn("Invalid geolocation data");
+      }
     } catch (err) {
-        console.error("Error fetching weather:", err);
+      console.error("Error fetching weather:", err);
     }
-}
+  }
   // Fetch weather data by geolocation
   async function fetchWeather() {
     try {
-        if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
-            const weatherUrl = `${backendUrl}/getWeather?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
-            const weatherResponse = await fetch(weatherUrl);
-            
-            if (!weatherResponse.ok) {
-                throw new Error(`API error: ${weatherResponse.statusText}`);
-            }
+      if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
+        const weatherUrl = `${backendUrl}/getWeather?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
+        const weatherResponse = await fetch(weatherUrl);
 
-            const weatherData = await weatherResponse.json();
-            setWeather(weatherData);
-        } else {
-            console.warn("Invalid geolocation data");
+        if (!weatherResponse.ok) {
+          throw new Error(`API error: ${weatherResponse.statusText}`);
         }
+
+        const weatherData = await weatherResponse.json();
+        setWeather(weatherData);
+      } else {
+        console.warn("Invalid geolocation data");
+      }
     } catch (err) {
-        console.error("Error fetching weather:", err);
+      console.error("Error fetching weather:", err);
     }
-}
+  }
 
   //fetch geolation with city using openweathermap api
   async function fetchGeoLocationByCity() {
@@ -93,21 +92,21 @@ function App() {
   async function fetchForecastWeather() {
     try {
       if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
-          const weatherUrl = `${backendUrl}/getForecastWeather?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
-          const weatherResponse = await fetch(weatherUrl);
-          
-          if (!weatherResponse.ok) {
-              throw new Error(`API error: ${weatherResponse.statusText}`);
-          }
+        const weatherUrl = `${backendUrl}/getForecastWeather?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
+        const weatherResponse = await fetch(weatherUrl);
 
-          const weatherData = await weatherResponse.json();
-          console.log(weatherData)
-          setForecastWeather(weatherData)
+        if (!weatherResponse.ok) {
+          throw new Error(`API error: ${weatherResponse.statusText}`);
+        }
+
+        const weatherData = await weatherResponse.json();
+        console.log(weatherData);
+        setForecastWeather(weatherData);
       } else {
-          console.warn("Invalid geolocation data");
+        console.warn("Invalid geolocation data");
       }
     } catch (err) {
-        console.error("Error fetching weather:", err);
+      console.error("Error fetching weather:", err);
     }
   }
   // Event handler for search input
@@ -118,28 +117,28 @@ function App() {
   useEffect(() => {
     getLocation();
   }, []);
-  
+
   // Fetch weather whenever geoLocation updates (but skip first render)
   useEffect(() => {
     if (!hasMountedGeoLocation.current) {
       hasMountedGeoLocation.current = true; // Mark it as mounted
       return; // Skip execution on mount
     }
-  
+
     if (geoLocation !== null) {
       fetchWeather();
       fetchCityByGeolocation();
       fetchForecastWeather();
     }
   }, [geoLocation]);
-  
+
   // Fetch geolocation by city whenever city updates (but skip first render)
   useEffect(() => {
     if (!hasMountedCity.current) {
       hasMountedCity.current = true;
       return;
     }
-  
+
     if (city !== "No City In useState Yet") {
       fetchGeoLocationByCity();
     }
@@ -187,19 +186,19 @@ function App() {
   return (
     <div className={`${getBackgroundClass(weather?.weather?.[0]?.main)}`}>
       <div className="appContainer">
-        <input
-          value={searchValue}
-          onChange={(event) => setSearchValue(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              handleSearch();
-            }
-          }}
-          type="text"
-          placeholder="Enter location"
-          className="search"
-        />
-        <div>
+        <div className="bg-black/25 p-16">
+          <input
+            value={searchValue}
+            onChange={(event) => setSearchValue(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleSearch();
+              }
+            }}
+            type="text"
+            placeholder="Enter location"
+            className="search"
+          />
           <div className="date-weather">
             <div className="dates">
               <div>
@@ -208,50 +207,74 @@ function App() {
               </div>
               <div>
                 <p>Time/date in {city}</p>
-                {weather? <LocationDate timezoneOffset={weather.timezone} city={city}/> : "Loading Time"}
+                {weather ? (
+                  <LocationDate timezoneOffset={weather.timezone} city={city} />
+                ) : (
+                  "Loading Time"
+                )}
               </div>
             </div>
-            {forecastWeather? <ForecastWeather {...forecastWeather}/> : 'Forecast Loading'}
-            <div>
-              <h1>{weather? `${getCountryName(weather.sys.country)}` : ""}</h1>
-              {weather?.name ? `${city ? `${city}` : ""}` : "No City name"}
-            </div>
-            <div>
-              <h1>{weather?.main?.temp ? `${weather.main.temp}°C` : "Loading..."}</h1>
-              {weather?.main && (
-                <div>
-                  <p>High: {weather.main.temp_max}°C</p>
-                  <p>Low: {weather.main.temp_min}°C</p>
-                  <p>Feels Like: {weather.main.feels_like}°C</p>
-                </div>
-              )}
-            </div>
-            <div>
-              {weather?.weather?.[0] && (
-                <>
-                  <h1>{weather.weather[0].main}</h1>
-                  <p>
-                    {weather.weather[0].description.charAt(0).toUpperCase() +
-                      weather.weather[0].description.slice(1)}
-                  </p>
-                  <img
-                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-                    alt="Weather icon"
-                  />
-                </>
-              )}
+            <h1>{weather ? `${getCountryName(weather.sys.country)}` : ""}</h1>
+            {weather?.name ? `${city ? `${city}` : ""}` : "No City name"}
+            <div className="flex flex-row space-x-3 items-center justify-center h-full">
+              <div>
+                {weather?.weather?.[0] && (
+                  <div className="flex flex-row gap-1">
+                    <div>
+                      <h1>{weather.weather[0].main}</h1>
+                      <p>
+                        {weather.weather[0].description
+                          .charAt(0)
+                          .toUpperCase() +
+                          weather.weather[0].description.slice(1)}
+                      </p>
+                    </div>
+                    <img
+                      src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                      alt="Weather icon"
+                    />
+                  </div>
+                )}
+              </div>
+              <div>
+                <h1>
+                  {weather?.main?.temp
+                    ? `${weather.main.temp}°C`
+                    : "Loading..."}
+                </h1>
+                {weather?.main && (
+                  <div>
+                    <p>High: {weather.main.temp_max}°C</p>
+                    <p>Low: {weather.main.temp_min}°C</p>
+                    <p>Feels Like: {weather.main.feels_like}°C</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="humidity-wind">
             <div>
-              <FontAwesomeIcon icon={faWater}/>
-              <p>{weather?.main?.humidity ? `Humidity: ${weather.main.humidity}%` : ""}</p>
+              <FontAwesomeIcon icon={faWater} />
+              <p>
+                {weather?.main?.humidity
+                  ? `Humidity: ${weather.main.humidity}%`
+                  : ""}
+              </p>
             </div>
             <div>
-              <FontAwesomeIcon icon={faWind}/>
-              <p>{weather?.wind?.speed ? `Wind Speed: ${weather.wind.speed} km/h` : ""}</p>
+              <FontAwesomeIcon icon={faWind} />
+              <p>
+                {weather?.wind?.speed
+                  ? `Wind Speed: ${weather.wind.speed} km/h`
+                  : ""}
+              </p>
             </div>
           </div>
+          {forecastWeather ? (
+            <ForecastWeather {...forecastWeather} />
+          ) : (
+            "Forecast Loading"
+          )}
         </div>
       </div>
     </div>
