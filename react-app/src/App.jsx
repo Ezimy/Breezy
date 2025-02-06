@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import CurrentDate from "./components/CurrentDate";
 import countryCodeLookup from "country-code-lookup";
 import LocationDate from "./components/LocationDate";
@@ -6,10 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWater,faWind } from "@fortawesome/free-solid-svg-icons";
 import ForecastWeather from "./components/ForecastWeather";
 function App() {
+  const hasMountedGeoLocation = useRef(false);
+  const hasMountedCity = useRef(false);
   const [city, setCity] = useState("No City In useState Yet");
   const [searchValue, setSearchValue] = useState("");
   const [weather, setWeather] = useState(null);
-  const [geoLocation, setGeoLocation] = useState([0,0]); // [lat, lon]
+  const [geoLocation, setGeoLocation] = useState([null,null]); // [lat, lon]
   const [forecastWeather, setForecastWeather] = useState(null)
   const backendUrl = 'http://localhost:8080';
 
@@ -25,6 +27,7 @@ function App() {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
           setGeoLocation([lat, lon]);
+
         },
         (error) => console.error("Geolocation error:", error)
       );
@@ -76,11 +79,11 @@ function App() {
     try {
       const geoUrl = `${backendUrl}/getGeolocation?city=${city}`;
       const geoResponse = await fetch(geoUrl);
-      const geoData = await geoResponse.json();
-      setGeoLocation([geoData[0].lat, geoData[0].lon]);
-      if (geoData.length === 0) {
+      if (!geoResponse) {
         throw new Error("Location not found");
       }
+      const geoData = await geoResponse.json();
+      setGeoLocation([geoData[0].lat, geoData[0].lon]);
     } catch (err) {
       console.log("Error fetching geolocation", err);
     }
@@ -112,28 +115,35 @@ function App() {
     setCity(searchValue.charAt(0).toUpperCase() + searchValue.slice(1));
   };
 
-  // Fetch user's location on component mount
   useEffect(() => {
-    if (geoLocation[0] === 0 && geoLocation[1] === 0) {
-      getLocation();
-    }
+    getLocation();
   }, []);
-
-  // Fetch weather whenever geoLocation updates
+  
+  // Fetch weather whenever geoLocation updates (but skip first render)
   useEffect(() => {
-    if (geoLocation[0] !== 0 && geoLocation[1] !== 0) {
-      fetchWeather();
+    if (!hasMountedGeoLocation.current) {
+      hasMountedGeoLocation.current = true; // Mark it as mounted
+      return; // Skip execution on mount
     }
-    fetchCityByGeolocation()
+  
+    if (geoLocation !== null) {
+      fetchWeather();
+      fetchCityByGeolocation();
+      fetchForecastWeather();
+    }
   }, [geoLocation]);
-
-  // Fetch geolocation by city whenever city updates
+  
+  // Fetch geolocation by city whenever city updates (but skip first render)
   useEffect(() => {
-    if (city) {
+    if (!hasMountedCity.current) {
+      hasMountedCity.current = true;
+      return;
+    }
+  
+    if (city !== "No City In useState Yet") {
       fetchGeoLocationByCity();
     }
   }, [city]);
-  fetchForecastWeather();
   // Function to determine background class based on weather condition
   function getBackgroundClass(weatherCondition) {
     if (!weatherCondition) return "bg-default";
