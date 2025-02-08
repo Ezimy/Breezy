@@ -36,7 +36,7 @@ app.get("/getForecastWeather", async (req, res) => {
         return res.status(400).json({ error: "Latitude and Longitude are required" });
       }
   
-      const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
       const response = await axios.get(url);
       res.json(response.data);
     } catch (error) {

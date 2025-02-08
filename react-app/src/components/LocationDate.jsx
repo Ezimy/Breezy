@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const LocationDate = ({timezoneOffset,city}) => {
-    const [dateTime, setDateTime] = useState({ day: "", month: "", year:"", time: "" });
+const LocationDate = ({timezoneOffset}) => {
+    const [dateTime, setDateTime] = useState({ day: "", month: "", year:"", time: "", weekday: "" });
     const dayNames = [
         "Sunday",
         "Monday",
@@ -59,6 +59,7 @@ const LocationDate = ({timezoneOffset,city}) => {
                 day: localDate.getDate(),
                 month: localDate.getMonth(),
                 year: localDate.getFullYear(),
+                weekday:localDate.getDay(),
                 time: formatTime(localDate),
             });
         };
@@ -71,7 +72,7 @@ const LocationDate = ({timezoneOffset,city}) => {
   return (
     <div>
         <p>{dateTime.time}</p>
-        <p>{dayNames[dateTime.day]}</p>
+        <p>{dayNames[dateTime.weekday]}</p>
         <p>{monthNames[dateTime.month]} {dateTime.day} {dateTime.year}</p>
     </div>
   )

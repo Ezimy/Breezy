@@ -42,14 +42,21 @@ const ForecastWeather = (forecastWeather) => {
             src={`https://openweathermap.org/img/wn/${forecastWeather.list[i].weather[0].icon}@2x.png`}
             alt="weather-icon"
           />
-          <p>{(forecastWeather.list[i].main.temp - 273.15).toFixed(1)}°C</p>
+          <p>{forecastWeather.list[i].main.temp}°C</p>
         </div>
       );
     }
     return forecastElements;
   };
 
-  return <div className="forecast-container">{renderForecast()}</div>;
+  return (
+  <div className="forecast">
+    <h1>5 Day / 3 Hour Forecast</h1>
+    <div className="forecast-container">
+      {renderForecast()}
+    </div>
+  </div>
+  )
 };
 
 export default ForecastWeather;

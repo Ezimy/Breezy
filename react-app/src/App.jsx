@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import CurrentDate from "./components/CurrentDate";
-import countryCodeLookup from "country-code-lookup";
 import LocationDate from "./components/LocationDate";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWater, faWind } from "@fortawesome/free-solid-svg-icons";
 import ForecastWeather from "./components/ForecastWeather";
+import Weather from "./components/Weather";
 function App() {
   const hasMountedGeoLocation = useRef(false);
   const hasMountedCity = useRef(false);
@@ -15,10 +13,6 @@ function App() {
   const [forecastWeather, setForecastWeather] = useState(null);
   const backendUrl = "http://localhost:8080";
 
-  const getCountryName = (countryCode) => {
-    const country = countryCodeLookup.byIso(countryCode.toUpperCase());
-    return country ? country.country : "Country code not found";
-  };
   // Use JS navigator.geolocation to get device location
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -65,6 +59,7 @@ function App() {
 
         const weatherData = await weatherResponse.json();
         setWeather(weatherData);
+        console.log(weatherData)
       } else {
         console.warn("Invalid geolocation data");
       }
@@ -100,7 +95,7 @@ function App() {
         }
 
         const weatherData = await weatherResponse.json();
-        console.log(weatherData);
+        // console.log(weatherData);
         setForecastWeather(weatherData);
       } else {
         console.warn("Invalid geolocation data");
@@ -187,6 +182,20 @@ function App() {
     <div className={`${getBackgroundClass(weather?.weather?.[0]?.main)}`}>
       <div className="appContainer">
         <div className="bg-black/25 p-16">
+          <div className="dates">
+              <div>
+                <p>Local</p>
+                <CurrentDate />
+              </div>
+              <div>
+                <p>{city}</p>
+                {weather ? (
+                  <LocationDate timezoneOffset={weather.timezone}/>
+                ) : (
+                  "Loading Time"
+                )}
+              </div>
+          </div>
           <input
             value={searchValue}
             onChange={(event) => setSearchValue(event.target.value)}
@@ -199,82 +208,8 @@ function App() {
             placeholder="Enter location"
             className="search"
           />
-          <div className="date-weather">
-            <div className="dates">
-              <div>
-                <p>Local time/date:</p>
-                <CurrentDate />
-              </div>
-              <div>
-                <p>Time/date in {city}</p>
-                {weather ? (
-                  <LocationDate timezoneOffset={weather.timezone} city={city} />
-                ) : (
-                  "Loading Time"
-                )}
-              </div>
-            </div>
-            <h1>{weather ? `${getCountryName(weather.sys.country)}` : ""}</h1>
-            {weather?.name ? `${city ? `${city}` : ""}` : "No City name"}
-            <div className="flex flex-row space-x-3 items-center justify-center h-full">
-              <div>
-                {weather?.weather?.[0] && (
-                  <div className="flex flex-row gap-1">
-                    <div>
-                      <h1>{weather.weather[0].main}</h1>
-                      <p>
-                        {weather.weather[0].description
-                          .charAt(0)
-                          .toUpperCase() +
-                          weather.weather[0].description.slice(1)}
-                      </p>
-                    </div>
-                    <img
-                      src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-                      alt="Weather icon"
-                    />
-                  </div>
-                )}
-              </div>
-              <div>
-                <h1>
-                  {weather?.main?.temp
-                    ? `${weather.main.temp}°C`
-                    : "Loading..."}
-                </h1>
-                {weather?.main && (
-                  <div>
-                    <p>High: {weather.main.temp_max}°C</p>
-                    <p>Low: {weather.main.temp_min}°C</p>
-                    <p>Feels Like: {weather.main.feels_like}°C</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="humidity-wind">
-            <div>
-              <FontAwesomeIcon icon={faWater} />
-              <p>
-                {weather?.main?.humidity
-                  ? `Humidity: ${weather.main.humidity}%`
-                  : ""}
-              </p>
-            </div>
-            <div>
-              <FontAwesomeIcon icon={faWind} />
-              <p>
-                {weather?.wind?.speed
-                  ? `Wind Speed: ${weather.wind.speed} km/h`
-                  : ""}
-              </p>
-            </div>
-          </div>
-          {forecastWeather ? (
-            <ForecastWeather {...forecastWeather} />
-          ) : (
-            "Forecast Loading"
-          )}
+          {weather ? <Weather weather={weather} city={city}/> : 'Loading Weather'}
+          {forecastWeather ? <ForecastWeather {...forecastWeather} /> : "Forecast Loading"}
         </div>
       </div>
     </div>
