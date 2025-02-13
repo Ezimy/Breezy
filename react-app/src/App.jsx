@@ -180,8 +180,8 @@ function App() {
 
   return (
     <div className={`${getBackgroundClass(weather?.weather?.[0]?.main)}`}>
-      <div className="appContainer">
-        <div className="bg-black/25 p-16">
+      <div className="app">
+        <div className="app-container">
           <div className="dates">
               <div>
                 <p>Local</p>

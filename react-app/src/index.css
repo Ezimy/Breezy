@@ -5,20 +5,22 @@ body {
   font-family: "Sora", serif;
 }
 
-.appContainer {
+.app{
   @apply flex flex-col text-center justify-center items-center min-h-screen max-w-2xl mx-auto p-4 space-y-3 text-white;
 
   position: relative;
   z-index: 2;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
-
+.app-container{
+  @apply rounded-lg bg-black/70 p-16;
+}
 .search {
-  @apply border-2 rounded-xl px-2 w-full py-2;
+  @apply border-2 rounded-xl px-4 w-full py-2;
 }
 
 .weather-overview {
-  @apply gap-y-3;
+  @apply my-4 gap-y-3 border-1;
   h1 {
     @apply text-3xl sm:text-6xl;
   }
@@ -31,26 +33,69 @@ body {
 .dates {
   display: flex;
   justify-content: space-between;
-  padding: 1rem 4rem;
+  padding: 0 4rem;
+  margin: 1rem 0;
   gap: 1rem;
 }
+.weather-details{
+  border: 1px solid white;
+  padding: 1rem 4rem;
+  font-size: small;
+}
 .temp-details{
+  border: 1px solid white;
   display: flex;
   justify-content: space-between;
+  gap: 0.5rem;
 }
 .wind{
-  @apply flex
+  border: 1px solid white;
+  flex-direction: column;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wind-title{
+  font-size: medium;
+  display: flex;
+  gap: 0.5rem;
+}
+.wind-details{
+  display: flex;
+  gap: 1rem;
 }
 .humidity-precipitation {
-  @apply flex
+  display:flex;
+  justify-content: center;
+  gap: 3rem;
+  border: 1px solid white;
 }
-
+.humidity-precipitation .label{
+  display: flex;
+  gap:0.25rem;
+}
+.precipitation{
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.forecast {
+  @apply bg-blue-500 rounded-4xl p-4 mt-4;
+  h1 {
+    @apply text-2xl sm:text-3xl mb-4;
+  }
+}
 .forecast-container {
-  @apply flex flex-row text-center rounded-4xl opacity-90 bg-blue-500 space-x-1 p-2 w-[600px] overflow-x-scroll;
+  @apply flex flex-row text-center opacity-90 space-x-1 p-2 w-[600px] overflow-x-scroll;
 }
 
 .forecast-entry {
   @apply w-auto px-4;
+  .icon{
+    @apply w-18 h-18
+  }
 }
 
 .forecast-container::-webkit-scrollbar {

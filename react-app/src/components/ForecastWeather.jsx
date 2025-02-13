@@ -10,11 +10,17 @@ const ForecastWeather = (forecastWeather) => {
     "Friday",
     "Saturday",
   ];
-
+  const monthNames = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
   const getDayFromTimestamp = (dt_txt) => {
     const date = new Date(dt_txt);
     return dayNames[date.getDay()];
   };
+  const getDateFromTimestamp = (dt_txt) => {
+    const date = new Date(dt_txt)
+    return monthNames[date.getMonth()] + " " + date.getDate()
+  }
   const formatTime = (dt_txt) => {
     const date = new Date(dt_txt);
     let hours = date.getHours();
@@ -36,11 +42,13 @@ const ForecastWeather = (forecastWeather) => {
       forecastElements.push(
         <div key={i + "forecast"} className="forecast-entry">
           <p>{getDayFromTimestamp(forecastWeather.list[i].dt_txt)}</p>
+          <p>{getDateFromTimestamp(forecastWeather.list[i].dt_txt)}</p>
           <p>{formatTime(forecastWeather.list[i].dt_txt).time}</p>
           <p>{formatTime(forecastWeather.list[i].dt_txt).period}</p>
           <img
             src={`https://openweathermap.org/img/wn/${forecastWeather.list[i].weather[0].icon}@2x.png`}
             alt="weather-icon"
+            className="icon"
           />
           <p>{forecastWeather.list[i].main.temp}°C</p>
         </div>

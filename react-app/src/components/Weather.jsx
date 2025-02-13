@@ -48,40 +48,55 @@ const Weather = ({weather, city}) => {
               <p>Feels Like: {weather.main.feels_like}°C</p>
           </div>
           <div className="wind">
-            <FontAwesomeIcon icon={faWind} />
-            <p>
-              Wind Speed: {weather.wind.speed} km/h
-            </p>
-            <p>
-              Gusts: {weather.wind.gust} km/h
-            </p>
-            <p>Wind Direction: {getWindDirection(weather.wind.deg)}</p>
+            <div className="wind-title">
+              <p>Wind</p>
+              <FontAwesomeIcon icon={faWind} />
+            </div>
+            <div className="wind-details">
+              <p>
+                Speed: {weather.wind.speed} km/h
+              </p>
+              <p>
+                Gusts: {weather.wind.gust} km/h
+              </p>
+              <p>Direction: {getWindDirection(weather.wind.deg)}</p>
+            </div>
           </div>
           <div className="humidity-precipitation">
               <div>
-                <FontAwesomeIcon icon={faWater} />
-                <p>
-                  Humidity: {weather.main.humidity}%
-                </p>
+                  <p>Humidity</p>
+                  <div className="label">
+                    <FontAwesomeIcon icon={faWater}/>
+                    <p>{weather.main.humidity}%</p>
+                  </div>
               </div>
               {weather.rain?.["1h"] && (
-                <div>
-                  <FontAwesomeIcon icon={faDroplet}/>
-                  <p>Precipitation: {weather.rain["1h"]} mm/h</p>
+                <div className="precipitation">
+                  <p>Precipitation</p>
+                  <div className="label">
+                    <FontAwesomeIcon icon={faDroplet}/>
+                    <p>{weather.rain["1h"]} mm/h</p>
+                  </div>
                 </div>
               )}
               
               {weather.snow?.["1h"] && (
-                <div>
-                  <FontAwesomeIcon icon={faSnowflake}/>
-                  <p>Precipitation: {weather.snow["1h"]} mm/h</p>
+                <div className="precipitation">
+                  <p>Precipitation</p>
+                  <div className="label">
+                    <FontAwesomeIcon icon={faSnowflake}/>
+                    <p>{weather.snow["1h"]} mm/h</p>
+                  </div>
                 </div>
               )}
 
               {!weather.rain?.["1h"] && !weather.snow?.["1h"] && (
-                <div>
-                  <FontAwesomeIcon icon={faSun}/>
-                  <p>Precipitation: 0 mm/h</p>
+                <div className="precipitation">
+                  <p>Precipitation</p>
+                  <div className="label">
+                    <FontAwesomeIcon icon={faSun}/>
+                    <p>0 mm/h</p>
+                  </div>
                 </div>
               )}
           </div>
