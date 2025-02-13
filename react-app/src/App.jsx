@@ -3,14 +3,18 @@ import CurrentDate from "./components/CurrentDate";
 import LocationDate from "./components/LocationDate";
 import ForecastWeather from "./components/ForecastWeather";
 import Weather from "./components/Weather";
+import LocationDropdown from "./components/LocationDropdown";
+
 function App() {
   const hasMountedGeoLocation = useRef(false);
   const hasMountedCity = useRef(false);
-  const [city, setCity] = useState("No City In useState Yet");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [weather, setWeather] = useState(null);
   const [geoLocation, setGeoLocation] = useState([null, null]); // [lat, lon]
   const [forecastWeather, setForecastWeather] = useState(null);
+  const [geoLocationOptions, setGeoLocationOptions] = useState([]);
   const backendUrl = "http://localhost:8080";
 
   // Use JS navigator.geolocation to get device location
@@ -26,26 +30,6 @@ function App() {
       );
     }
   };
-  //Fetch city data by geolocation
-  async function fetchCityByGeolocation() {
-    try {
-      if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
-        const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
-        const cityResponse = await fetch(url);
-
-        if (!cityResponse.ok) {
-          throw new Error(`API error: ${cityResponse.statusText}`);
-        }
-
-        const cityData = await cityResponse.json();
-        setCity(cityData[0].name);
-      } else {
-        console.warn("Invalid geolocation data");
-      }
-    } catch (err) {
-      console.error("Error fetching weather:", err);
-    }
-  }
   // Fetch weather data by geolocation
   async function fetchWeather() {
     try {
@@ -59,7 +43,6 @@ function App() {
 
         const weatherData = await weatherResponse.json();
         setWeather(weatherData);
-        console.log(weatherData)
       } else {
         console.warn("Invalid geolocation data");
       }
@@ -73,11 +56,22 @@ function App() {
     try {
       const geoUrl = `${backendUrl}/getGeolocation?city=${city}`;
       const geoResponse = await fetch(geoUrl);
-      if (!geoResponse) {
+      if (!geoResponse.ok) {
         throw new Error("Location not found");
       }
       const geoData = await geoResponse.json();
-      setGeoLocation([geoData[0].lat, geoData[0].lon]);
+
+      const uniqueGeoData = [];
+      const seenNames = new Set();
+
+      for (const location of geoData) {
+        const locationKey = `${location.name}-${location.state}-${location.country}`;
+        if (!seenNames.has(locationKey)) {
+          uniqueGeoData.push(location);
+          seenNames.add(locationKey);
+        }
+      }
+      setGeoLocationOptions(uniqueGeoData);
     } catch (err) {
       console.log("Error fetching geolocation", err);
     }
@@ -95,7 +89,6 @@ function App() {
         }
 
         const weatherData = await weatherResponse.json();
-        // console.log(weatherData);
         setForecastWeather(weatherData);
       } else {
         console.warn("Invalid geolocation data");
@@ -107,6 +100,14 @@ function App() {
   // Event handler for search input
   const handleSearch = () => {
     setCity(searchValue.charAt(0).toUpperCase() + searchValue.slice(1));
+    setState("");
+  };
+
+  const handleLocationChange = (event) => {
+    const selectedValue = JSON.parse(event.target.value);
+    const [lat, lon, state] = selectedValue;
+    setGeoLocation([lat, lon]);
+    setState(state);
   };
 
   useEffect(() => {
@@ -122,7 +123,6 @@ function App() {
 
     if (geoLocation !== null) {
       fetchWeather();
-      fetchCityByGeolocation();
       fetchForecastWeather();
     }
   }, [geoLocation]);
@@ -183,18 +183,18 @@ function App() {
       <div className="app">
         <div className="app-container">
           <div className="dates">
-              <div>
-                <p>Local</p>
-                <CurrentDate />
-              </div>
-              <div>
-                <p>{city}</p>
-                {weather ? (
-                  <LocationDate timezoneOffset={weather.timezone}/>
-                ) : (
-                  "Loading Time"
-                )}
-              </div>
+            <div>
+              <p>Local</p>
+              <CurrentDate />
+            </div>
+            <div>
+              <p>{city}</p>
+              {weather ? (
+                <LocationDate timezoneOffset={weather.timezone} />
+              ) : (
+                "Loading Time"
+              )}
+            </div>
           </div>
           <input
             value={searchValue}
@@ -208,8 +208,29 @@ function App() {
             placeholder="Enter location"
             className="search"
           />
-          {weather ? <Weather weather={weather} city={city}/> : 'Loading Weather'}
-          {forecastWeather ? <ForecastWeather {...forecastWeather} /> : "Forecast Loading"}
+
+          <div className="location-dropdown">
+            <LocationDropdown
+              options={geoLocationOptions}
+              selectedValue={geoLocation}
+              onChange={handleLocationChange}
+            />
+          </div>
+
+          {weather ? (
+            <Weather
+              weather={weather}
+              geoLocation={geoLocation}
+              state={state}
+            />
+          ) : (
+            "Loading Weather"
+          )}
+          {forecastWeather ? (
+            <ForecastWeather {...forecastWeather} />
+          ) : (
+            "Forecast Loading"
+          )}
         </div>
       </div>
     </div>
