@@ -1,16 +1,14 @@
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import countryCodeLookup from "country-code-lookup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faWater,
-  faWind,
-  faSnowflake,
-  faDroplet,
-  faSun,
+import { 
+  faWater, faWind, faSnowflake, faDroplet, faSun, faGauge, faArrowUp, faArrowDown 
 } from "@fortawesome/free-solid-svg-icons";
+
 const Weather = ({ weather, geoLocation, state }) => {
   const backendUrl = "http://localhost:8080";
   const [city, setCity] = useState("");
+
   useEffect(() => {
     async function fetchCity() {
       try {
@@ -23,7 +21,7 @@ const Weather = ({ weather, geoLocation, state }) => {
           }
 
           const cityData = await cityResponse.json();
-          setCity(cityData[0].name || "Unknown City");
+          setCity(cityData[0]?.name || "Unknown City");
         } else {
           console.warn("Invalid geolocation data");
         }
@@ -32,7 +30,6 @@ const Weather = ({ weather, geoLocation, state }) => {
         setCity("Error fetching city");
       }
     }
-
     fetchCity();
   }, [geoLocation]);
 
@@ -40,6 +37,7 @@ const Weather = ({ weather, geoLocation, state }) => {
     const country = countryCodeLookup.byIso(countryCode.toUpperCase());
     return country ? country.country : "Country code not found";
   };
+
   function getWindDirection(degree) {
     if (degree >= 337.5 || degree < 22.5) return "North (N)";
     if (degree >= 22.5 && degree < 67.5) return "Northeast (NE)";
@@ -71,13 +69,13 @@ const Weather = ({ weather, geoLocation, state }) => {
               alt="Weather icon"
             />
           </div>
-          <h1>{weather.main.temp}</h1>
+          <h1>{weather.main.temp}°C</h1>
         </div>
       </div>
       <div className="weather-details">
         <div className="temp-details">
-          <p>High: {weather.main.temp_max}°C</p>
-          <p>Low: {weather.main.temp_min}°C</p>
+          <p>High: {weather.main.temp_max}°C <FontAwesomeIcon icon={faArrowUp} /></p>
+          <p>Low: {weather.main.temp_min}°C <FontAwesomeIcon icon={faArrowDown} /></p>
           <p>Feels Like: {weather.main.feels_like}°C</p>
         </div>
         <div className="wind">
@@ -108,7 +106,6 @@ const Weather = ({ weather, geoLocation, state }) => {
               </div>
             </div>
           )}
-
           {weather.snow?.["1h"] && (
             <div className="precipitation">
               <p>Precipitation</p>
@@ -118,7 +115,6 @@ const Weather = ({ weather, geoLocation, state }) => {
               </div>
             </div>
           )}
-
           {!weather.rain?.["1h"] && !weather.snow?.["1h"] && (
             <div className="precipitation">
               <p>Precipitation</p>
@@ -128,6 +124,13 @@ const Weather = ({ weather, geoLocation, state }) => {
               </div>
             </div>
           )}
+          <div>
+            <p>Pressure</p>
+            <div className="label">
+              <FontAwesomeIcon icon={faGauge} />
+              <p>{(weather.main.pressure * 0.1).toFixed(1)} kPa</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

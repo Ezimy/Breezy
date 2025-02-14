@@ -20,7 +20,7 @@ body {
 }
 
 .weather-overview {
-  @apply my-4 gap-y-3 border-1;
+  @apply my-4 gap-y-3;
   h1 {
     @apply text-3xl sm:text-6xl;
   }
@@ -31,62 +31,47 @@ body {
 }
 
 .dates {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 4rem;
-  margin: 1rem 0;
-  gap: 1rem;
+  @apply flex justify-between px-16 my-4 gap-4;
 }
+
 .weather-details {
-  border: 1px solid white;
-  padding: 1rem 4rem;
-  font-size: small;
+  @apply px-16 py-4 text-sm;
 }
 
 .temp-details {
-  border: 1px solid white;
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
+  @apply flex justify-center gap-2;
 }
 
 .wind {
-  border: 1px solid white;
-  flex-direction: column;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @apply flex flex-col items-center justify-center p-4;
 }
+
 .wind-title {
-  font-size: medium;
-  display: flex;
-  gap: 0.5rem;
+  @apply flex gap-2 text-base;
 }
+
 .wind-details {
-  display: flex;
-  gap: 1rem;
+  @apply flex gap-4;
 }
+
 .humidity-precipitation {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-  border: 1px solid white;
+  @apply flex justify-center gap-12;
 }
+
 .humidity-precipitation .label {
-  display: flex;
-  gap: 0.25rem;
+  @apply flex gap-2;
 }
+
 .precipitation {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  @apply flex flex-col items-center justify-center;
 }
 .forecast {
   @apply bg-blue-500 rounded-4xl p-4 mt-4;
   h1 {
     @apply text-2xl sm:text-3xl mb-4;
+  }
+  p{
+    @apply text-sm 
   }
 }
 .forecast-container {
@@ -94,9 +79,10 @@ body {
 }
 
 .forecast-entry {
-  @apply w-auto px-4;
+  @apply w-auto max-w-[400px] px-4 border-1;
+  
   .icon {
-    @apply w-18 h-18;
+    @apply w-[72px] h-[72px] object-contain;
   }
 }
 

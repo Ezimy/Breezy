@@ -35,7 +35,11 @@ const ForecastWeather = (forecastWeather) => {
       period: `${amPm}`,
     };
   };
-
+  const getPrecipitation = (listEntry) => {
+    const snow = listEntry.snow?.["3h"] || 0;
+    const rain = listEntry.rain?.["3h"] || 0;
+    return snow + rain;
+  };
   const renderForecast = () => {
     const forecastElements = [];
     for (let i = 0; i < forecastWeather.list.length; i++) {
@@ -45,12 +49,16 @@ const ForecastWeather = (forecastWeather) => {
           <p>{getDateFromTimestamp(forecastWeather.list[i].dt_txt)}</p>
           <p>{formatTime(forecastWeather.list[i].dt_txt).time}</p>
           <p>{formatTime(forecastWeather.list[i].dt_txt).period}</p>
-          <img
-            src={`https://openweathermap.org/img/wn/${forecastWeather.list[i].weather[0].icon}@2x.png`}
-            alt="weather-icon"
-            className="icon"
-          />
-          <p>{forecastWeather.list[i].main.temp}°C</p>
+          <div className="flex justify-center items-center w-[80px] h-[80px]">
+            <img
+              src={`https://openweathermap.org/img/wn/${forecastWeather.list[i].weather[0].icon}@2x.png`}
+              alt="weather-icon"
+              className="w-[72px] h-[72px] object-contain"
+            />
+          </div>
+          <p className="ppt-value">
+            ppt: {getPrecipitation(forecastWeather.list[i])} mm/h
+          </p>
         </div>
       );
     }
