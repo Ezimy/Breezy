@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import CurrentDate from "./components/CurrentDate";
 import LocationDate from "./components/LocationDate";
 import ForecastWeather from "./components/ForecastWeather";
 import Weather from "./components/Weather";
 import LocationDropdown from "./components/LocationDropdown";
-
+import { CityContext } from "./context/CityContext";
 function App() {
   const hasMountedGeoLocation = useRef(false);
   const hasMountedCity = useRef(false);
-  const [city, setCity] = useState("");
+  const { city, setCity } = useContext(CityContext);
   const [state, setState] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [weather, setWeather] = useState(null);
   const [geoLocation, setGeoLocation] = useState([null, null]); // [lat, lon]
   const [forecastWeather, setForecastWeather] = useState(null);
@@ -42,6 +43,7 @@ function App() {
         }
 
         const weatherData = await weatherResponse.json();
+        console.log(weatherData)
         setWeather(weatherData);
       } else {
         console.warn("Invalid geolocation data");
@@ -50,11 +52,9 @@ function App() {
       console.error("Error fetching weather:", err);
     }
   }
-
-  //fetch geolation with city using openweathermap api
-  async function fetchGeoLocationByCity() {
+  async function fetchGeoLocationBySearchQuery() {
     try {
-      const geoUrl = `${backendUrl}/getGeolocation?city=${city}`;
+      const geoUrl = `${backendUrl}/getGeolocation?city=${searchQuery}`;
       const geoResponse = await fetch(geoUrl);
       if (!geoResponse.ok) {
         throw new Error("Location not found");
@@ -71,6 +71,7 @@ function App() {
           seenNames.add(locationKey);
         }
       }
+      console.log(uniqueGeoData)
       setGeoLocationOptions(uniqueGeoData);
     } catch (err) {
       console.log("Error fetching geolocation", err);
@@ -99,12 +100,13 @@ function App() {
   }
   // Event handler for search input
   const handleSearch = () => {
-    setCity(searchValue.charAt(0).toUpperCase() + searchValue.slice(1));
+    setSearchQuery(searchValue.charAt(0).toUpperCase() + searchValue.slice(1));
     setState("");
   };
 
   const handleLocationChange = (event) => {
     const selectedValue = JSON.parse(event.target.value);
+    console.log(selectedValue)
     const [lat, lon, state] = selectedValue;
     setGeoLocation([lat, lon]);
     setState(state);
@@ -135,9 +137,9 @@ function App() {
     }
 
     if (city !== "No City In useState Yet") {
-      fetchGeoLocationByCity();
+      fetchGeoLocationBySearchQuery();
     }
-  }, [city]);
+  }, [searchQuery]);
   // Function to determine background class based on weather condition
   function getBackgroundClass(weatherCondition) {
     if (!weatherCondition) return "bg-default";
@@ -188,7 +190,7 @@ function App() {
               <CurrentDate />
             </div>
             <div>
-              <p>{city}</p>
+              <p>{city} {state? `, ${state}` : ""}{weather && weather.sys.country ? `, ${weather.sys.country}` : ""}</p>
               {weather ? (
                 <LocationDate timezoneOffset={weather.timezone} />
               ) : (
@@ -201,7 +203,7 @@ function App() {
             onChange={(event) => setSearchValue(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === "Enter") {
-                handleSearch();
+                handleSearch()
               }
             }}
             type="text"

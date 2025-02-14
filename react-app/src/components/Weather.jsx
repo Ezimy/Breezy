@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import countryCodeLookup from "country-code-lookup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CityContext } from "../context/CityContext";
 import { 
   faWater, faWind, faSnowflake, faDroplet, faSun, faGauge, faArrowUp, faArrowDown 
 } from "@fortawesome/free-solid-svg-icons";
 
 const Weather = ({ weather, geoLocation, state }) => {
   const backendUrl = "http://localhost:8080";
-  const [city, setCity] = useState("");
+  const { city, setCity } = useContext(CityContext);
 
   useEffect(() => {
     async function fetchCity() {

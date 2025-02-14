@@ -35,7 +35,7 @@ body {
 }
 
 .weather-details {
-  @apply px-16 py-4 text-sm;
+  @apply px-16 py-4 text-sm bg-black rounded-4xl;
 }
 
 .temp-details {
@@ -79,7 +79,7 @@ body {
 }
 
 .forecast-entry {
-  @apply w-auto max-w-[400px] px-4 border-1;
+  @apply w-auto max-w-[400px] px-4;
   
   .icon {
     @apply w-[72px] h-[72px] object-contain;
