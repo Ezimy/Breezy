@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import { Autocomplete, TextField } from "@mui/material";
 import CurrentDate from "./components/CurrentDate";
 import LocationDate from "./components/LocationDate";
 import ForecastWeather from "./components/ForecastWeather";
 import Weather from "./components/Weather";
-import LocationDropdown from "./components/LocationDropdown";
 import { CityContext } from "./context/CityContext";
+
 function App() {
   const hasMountedGeoLocation = useRef(false);
   const hasMountedCity = useRef(false);
@@ -43,7 +44,7 @@ function App() {
         }
 
         const weatherData = await weatherResponse.json();
-        console.log(weatherData)
+        console.log(weatherData);
         setWeather(weatherData);
       } else {
         console.warn("Invalid geolocation data");
@@ -71,7 +72,7 @@ function App() {
           seenNames.add(locationKey);
         }
       }
-      console.log(uniqueGeoData)
+      console.log(uniqueGeoData);
       setGeoLocationOptions(uniqueGeoData);
     } catch (err) {
       console.log("Error fetching geolocation", err);
@@ -102,14 +103,6 @@ function App() {
   const handleSearch = () => {
     setSearchQuery(searchValue.charAt(0).toUpperCase() + searchValue.slice(1));
     setState("");
-  };
-
-  const handleLocationChange = (event) => {
-    const selectedValue = JSON.parse(event.target.value);
-    console.log(selectedValue)
-    const [lat, lon, state] = selectedValue;
-    setGeoLocation([lat, lon]);
-    setState(state);
   };
 
   useEffect(() => {
@@ -190,7 +183,12 @@ function App() {
               <CurrentDate />
             </div>
             <div>
-              <p>{city} {state? `, ${state}` : ""}{weather && weather.sys.country ? `, ${weather.sys.country}` : ""}</p>
+              <p>
+                {city} {state ? `, ${state}` : ""}
+                {weather && weather.sys.country
+                  ? `, ${weather.sys.country}`
+                  : ""}
+              </p>
               {weather ? (
                 <LocationDate timezoneOffset={weather.timezone} />
               ) : (
@@ -198,26 +196,67 @@ function App() {
               )}
             </div>
           </div>
-          <input
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
+
+          <Autocomplete
+            onChange={(event, newValue) => {
+              if (newValue) {
+                const { lat, lon, state } = newValue;
+                setGeoLocation([lat, lon]);
+                setState(state);
+              }
+              console.log(searchQuery);
+            }}
+            onInputChange={(event, newInputValue) =>
+              setSearchValue(newInputValue)
+            }
             onKeyDown={(event) => {
               if (event.key === "Enter") {
-                handleSearch()
+                handleSearch();
               }
             }}
-            type="text"
-            placeholder="Enter location"
-            className="search"
+            options={geoLocationOptions}
+            getOptionLabel={(option) => {
+              const values = [option.name, option.state, option.country].filter(
+                (value) => value != null
+              );
+              return values.join(", ");
+            }}
+            value={
+              geoLocationOptions.find(
+                (opt) =>
+                  opt.lat === geoLocation[0] &&
+                  opt.lon === geoLocation[1] &&
+                  opt.state === opt.state
+              ) || null
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Enter a Location"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "white",
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "white",
+                  },
+                  input: { color: "white" },
+                }}
+              />
+            )}
+            sx={{
+              width: "100%",
+              "& .MuiAutocomplete-popupIndicator, & .MuiAutocomplete-clearIndicator":
+                {
+                  color: "white",
+                },
+            }}
           />
-
-          <div className="location-dropdown">
-            <LocationDropdown
-              options={geoLocationOptions}
-              selectedValue={geoLocation}
-              onChange={handleLocationChange}
-            />
-          </div>
 
           {weather ? (
             <Weather
