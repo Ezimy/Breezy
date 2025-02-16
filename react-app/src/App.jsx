@@ -44,7 +44,6 @@ function App() {
         }
 
         const weatherData = await weatherResponse.json();
-        console.log(weatherData);
         setWeather(weatherData);
       } else {
         console.warn("Invalid geolocation data");
@@ -72,7 +71,6 @@ function App() {
           seenNames.add(locationKey);
         }
       }
-      console.log(uniqueGeoData);
       setGeoLocationOptions(uniqueGeoData);
     } catch (err) {
       console.log("Error fetching geolocation", err);
@@ -204,7 +202,6 @@ function App() {
                 setGeoLocation([lat, lon]);
                 setState(state);
               }
-              console.log(searchQuery);
             }}
             onInputChange={(event, newInputValue) =>
               setSearchValue(newInputValue)

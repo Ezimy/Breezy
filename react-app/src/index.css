@@ -41,7 +41,7 @@ body {
   @apply flex gap-2 text-base justify-center;
 }
 .temp-details {
-  @apply flex-col justify-center items-center
+  @apply flex-col justify-center items-center;
 }
 .temp-details .high {
   @apply text-green-500;
@@ -50,18 +50,18 @@ body {
 .temp-details .low {
   @apply text-red-500;
 }
-.temp-details .feels{
+.temp-details .feels {
   @apply text-blue-500;
 }
 .wind {
-  @apply flex-col justify-center items-center
+  @apply flex-col justify-center items-center;
 }
 
 .wind-details {
 }
 
 .humidity-precipitation {
-  @apply flex-col justify-center items-center
+  @apply flex-col justify-center items-center;
 }
 
 .humidity-precipitation .label {
@@ -73,8 +73,8 @@ body {
   h1 {
     @apply text-2xl sm:text-3xl mb-4;
   }
-  p{
-    @apply text-sm 
+  p {
+    @apply text-sm;
   }
 }
 .forecast-container {
@@ -83,7 +83,7 @@ body {
 
 .forecast-entry {
   @apply w-auto max-w-[400px] px-4;
-  
+
   .icon {
     @apply w-[72px] h-[72px] object-contain;
   }
@@ -132,43 +132,43 @@ body {
 }
 
 .bg-default {
-  background: url("/Sunset.jpg") no-repeat center center/cover;
+  @apply bg-gradient-to-r from-cyan-900 to-blue-900;
 }
 
 .bg-ash {
-  background: url("/Ash.jpg") no-repeat center center/cover;
+  background: url("/Ash.webp") no-repeat center center/cover;
 }
 
 .bg-clear {
-  background: url("/Clear.jpg") no-repeat center center/cover;
+  background: url("/Clear.webp") no-repeat center center/cover;
 }
 
 .bg-clouds {
-  background: url("/Clouds.jpg") no-repeat center center/cover;
+  background: url("/Clouds.webp") no-repeat center center/cover;
 }
 
 .bg-drizzle {
-  background: url("/Drizzle.jpg") no-repeat center center/cover;
+  background: url("/Drizzle.webp") no-repeat center center/cover;
 }
 
 .bg-dust {
-  background: url("/Dust.png") no-repeat center center/cover;
+  background: url("/Dust.webp") no-repeat center center/cover;
 }
 
 .bg-fog {
-  background: url("/Fog.jpeg") no-repeat center center/cover;
+  background: url("/Fog.webp") no-repeat center center/cover;
 }
 
 .bg-haze {
-  background: url("/Haze.jpg") no-repeat center center/cover;
+  background: url("/Haze.webp") no-repeat center center/cover;
 }
 
 .bg-mist {
-  background: url("/Mist.jpeg") no-repeat center center/cover;
+  background: url("/Mist.webp") no-repeat center center/cover;
 }
 
 .bg-rain {
-  background: url("/Rain.jpg") no-repeat center center/cover;
+  background: url("/Rain.webp") no-repeat center center/cover;
 }
 
 .bg-sand {
@@ -176,21 +176,21 @@ body {
 }
 
 .bg-smoke {
-  background: url("/Smoke.jpg") no-repeat center center/cover;
+  background: url("/Smoke.webp") no-repeat center center/cover;
 }
 
 .bg-snow {
-  background: url("/Snow.jpg") no-repeat center center/cover;
+  background: url("/Snow.webp") no-repeat center center/cover;
 }
 
 .bg-squall {
-  background: url("/Squall.jpg") no-repeat center center/cover;
+  background: url("/Squall.webp") no-repeat center center/cover;
 }
 
 .bg-thunderstorm {
-  background: url("/Thunderstorm.jpg") no-repeat center center/cover;
+  background: url("/Thunderstorm.webp") no-repeat center center/cover;
 }
 
 .bg-tornado {
-  background: url("/Tornado.jpg") no-repeat center center/cover;
+  background: url("/Tornado.webp") no-repeat center center/cover;
 }
