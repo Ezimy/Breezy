@@ -35,36 +35,39 @@ body {
 }
 
 .weather-details {
-  @apply px-16 py-4 text-sm bg-black rounded-4xl;
+  @apply px-8 py-4 text-sm bg-black rounded-3xl flex justify-between items-center leading-loose;
 }
-
+.weather-details .title {
+  @apply flex gap-2 text-base justify-center;
+}
 .temp-details {
-  @apply flex justify-center gap-2;
+  @apply flex-col justify-center items-center
+}
+.temp-details .high {
+  @apply text-green-500;
 }
 
+.temp-details .low {
+  @apply text-red-500;
+}
+.temp-details .feels{
+  @apply text-blue-500;
+}
 .wind {
-  @apply flex flex-col items-center justify-center p-4;
-}
-
-.wind-title {
-  @apply flex gap-2 text-base;
+  @apply flex-col justify-center items-center
 }
 
 .wind-details {
-  @apply flex gap-4;
 }
 
 .humidity-precipitation {
-  @apply flex justify-center gap-12;
+  @apply flex-col justify-center items-center
 }
 
 .humidity-precipitation .label {
-  @apply flex gap-2;
+  @apply flex gap-1 justify-start items-center;
 }
 
-.precipitation {
-  @apply flex flex-col items-center justify-center;
-}
 .forecast {
   @apply bg-blue-500 rounded-4xl p-4 mt-4;
   h1 {

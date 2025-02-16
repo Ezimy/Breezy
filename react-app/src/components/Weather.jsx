@@ -3,7 +3,7 @@ import countryCodeLookup from "country-code-lookup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CityContext } from "../context/CityContext";
 import { 
-  faWater, faWind, faSnowflake, faDroplet, faSun, faGauge, faArrowUp, faArrowDown 
+  faWater, faWind, faSnowflake, faDroplet, faSun, faGauge, faArrowUp, faArrowDown, faTemperature0 
 } from "@fortawesome/free-solid-svg-icons";
 
 const Weather = ({ weather, geoLocation, state }) => {
@@ -75,12 +75,16 @@ const Weather = ({ weather, geoLocation, state }) => {
       </div>
       <div className="weather-details">
         <div className="temp-details">
-          <p>High: {weather.main.temp_max}°C <FontAwesomeIcon icon={faArrowUp} /></p>
-          <p>Low: {weather.main.temp_min}°C <FontAwesomeIcon icon={faArrowDown} /></p>
-          <p>Feels Like: {weather.main.feels_like}°C</p>
+          <div className="title">
+            <p>Temp</p>
+            <FontAwesomeIcon icon={faTemperature0} />
+          </div>
+          <p className="high">High: {weather.main.temp_max}°C <FontAwesomeIcon icon={faArrowUp}/></p>
+          <p className="low">Low: {weather.main.temp_min}°C <FontAwesomeIcon icon={faArrowDown}/></p>
+          <p className="feels">Feels Like: {weather.main.feels_like}°C</p>
         </div>
         <div className="wind">
-          <div className="wind-title">
+          <div className="title">
             <p>Wind</p>
             <FontAwesomeIcon icon={faWind} />
           </div>
@@ -91,44 +95,37 @@ const Weather = ({ weather, geoLocation, state }) => {
           </div>
         </div>
         <div className="humidity-precipitation">
-          <div>
-            <p>Humidity</p>
+          <h1>Atmospheric Conditions</h1>
             <div className="label">
               <FontAwesomeIcon icon={faWater} />
+              <p>Humidity</p>
               <p>{weather.main.humidity}%</p>
             </div>
-          </div>
           {weather.rain?.["1h"] && (
-            <div className="precipitation">
-              <p>Precipitation</p>
               <div className="label">
                 <FontAwesomeIcon icon={faDroplet} />
+                <p>Precipitation</p>
                 <p>{weather.rain["1h"]} mm/h</p>
               </div>
-            </div>
           )}
           {weather.snow?.["1h"] && (
-            <div className="precipitation">
-              <p>Precipitation</p>
               <div className="label">
                 <FontAwesomeIcon icon={faSnowflake} />
+                <p>Precipitation</p>
                 <p>{weather.snow["1h"]} mm/h</p>
               </div>
-            </div>
           )}
           {!weather.rain?.["1h"] && !weather.snow?.["1h"] && (
-            <div className="precipitation">
-              <p>Precipitation</p>
               <div className="label">
                 <FontAwesomeIcon icon={faSun} />
+                <p>Precipitation</p>
                 <p>0 mm/h</p>
               </div>
-            </div>
           )}
           <div>
-            <p>Pressure</p>
             <div className="label">
               <FontAwesomeIcon icon={faGauge} />
+              <p>Pressure</p>
               <p>{(weather.main.pressure * 0.1).toFixed(1)} kPa</p>
             </div>
           </div>
