@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import countryCodeLookup from "country-code-lookup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CityContext } from "../context/CityContext";
+import { LocationContext } from "../context/LocationContext";
 import { 
   faWater, faWind, faSnowflake, faDroplet, faSun, faGauge, faArrowUp, faArrowDown, faTemperature0 
 } from "@fortawesome/free-solid-svg-icons";
 
-const Weather = ({ weather, geoLocation, state }) => {
+const Weather = ({ weather, geoLocation}) => {
   const backendUrl = "http://localhost:8080";
-  const { city, setCity } = useContext(CityContext);
+  const { city, setCity, state, setState } = useContext(LocationContext);
 
   useEffect(() => {
     async function fetchCity() {
@@ -22,7 +22,9 @@ const Weather = ({ weather, geoLocation, state }) => {
           }
 
           const cityData = await cityResponse.json();
+          console.log(cityData)
           setCity(cityData[0]?.name || "Unknown City");
+          setState(cityData[0]?.state || "")
         } else {
           console.warn("Invalid geolocation data");
         }
@@ -53,9 +55,8 @@ const Weather = ({ weather, geoLocation, state }) => {
   return (
     <div className="weather">
       <div className="weather-overview">
-        <h1>{getCountryName(weather.sys.country)}</h1>
-        <p>{state}</p>
-        <p>{city}</p>
+        <h1>{city}</h1>
+        <p>{state? `${state}, ` : ""}{getCountryName(weather.sys.country)}</p>
         <div className="flex flex-row space-x-3 items-center justify-center h-full">
           <div className="flex flex-row gap-1">
             <div>

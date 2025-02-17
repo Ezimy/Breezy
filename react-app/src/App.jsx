@@ -6,13 +6,12 @@ import ForecastWeather from "./components/ForecastWeather";
 import Weather from "./components/Weather";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import { CityContext } from "./context/CityContext";
+import { LocationContext } from "./context/LocationContext";
 
 function App() {
   const hasMountedGeoLocation = useRef(false);
   const hasMountedCity = useRef(false);
-  const { city, setCity } = useContext(CityContext);
-  const [state, setState] = useState("");
+  const { city, setCity, state, setState } = useContext(LocationContext);
   const [searchValue, setSearchValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [weather, setWeather] = useState(null);
@@ -265,7 +264,6 @@ function App() {
               <Weather
                 weather={weather}
                 geoLocation={geoLocation}
-                state={state}
               />
             ) : (
               "Loading Weather"
