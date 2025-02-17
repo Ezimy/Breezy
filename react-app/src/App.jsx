@@ -4,6 +4,8 @@ import CurrentDate from "./components/CurrentDate";
 import LocationDate from "./components/LocationDate";
 import ForecastWeather from "./components/ForecastWeather";
 import Weather from "./components/Weather";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 import { CityContext } from "./context/CityContext";
 
 function App() {
@@ -175,100 +177,106 @@ function App() {
     <div className={`${getBackgroundClass(weather?.weather?.[0]?.main)}`}>
       <div className="app">
         <div className="app-container">
-          <div className="dates">
-            <div>
-              <p>Local</p>
-              <CurrentDate />
+          <Header />
+          <div className="flex-1">
+            <div className="dates">
+              <div>
+                <p>Local</p>
+                <CurrentDate />
+              </div>
+              <div>
+                <p>
+                  {city} {state ? `, ${state}` : ""}
+                  {weather && weather.sys.country
+                    ? `, ${weather.sys.country}`
+                    : ""}
+                </p>
+                {weather ? (
+                  <LocationDate timezoneOffset={weather.timezone} />
+                ) : (
+                  "Loading Time"
+                )}
+              </div>
             </div>
-            <div>
-              <p>
-                {city} {state ? `, ${state}` : ""}
-                {weather && weather.sys.country
-                  ? `, ${weather.sys.country}`
-                  : ""}
-              </p>
-              {weather ? (
-                <LocationDate timezoneOffset={weather.timezone} />
-              ) : (
-                "Loading Time"
+
+            <Autocomplete
+              onChange={(event, newValue) => {
+                if (newValue) {
+                  const { lat, lon, state } = newValue;
+                  setGeoLocation([lat, lon]);
+                  setState(state);
+                }
+              }}
+              onInputChange={(event, newInputValue) =>
+                setSearchValue(newInputValue)
+              }
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+              options={geoLocationOptions}
+              getOptionLabel={(option) => {
+                const values = [
+                  option.name,
+                  option.state,
+                  option.country,
+                ].filter((value) => value != null);
+                return values.join(", ");
+              }}
+              value={
+                geoLocationOptions.find(
+                  (opt) =>
+                    opt.lat === geoLocation[0] &&
+                    opt.lon === geoLocation[1] &&
+                    opt.state === opt.state
+                ) || null
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Enter a Location"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "white" },
+                      "&:hover fieldset": { borderColor: "white" },
+                      "&.Mui-focused fieldset": { borderColor: "white" },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "white",
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "white",
+                    },
+                    input: { color: "white" },
+                  }}
+                />
               )}
-            </div>
-          </div>
-
-          <Autocomplete
-            onChange={(event, newValue) => {
-              if (newValue) {
-                const { lat, lon, state } = newValue;
-                setGeoLocation([lat, lon]);
-                setState(state);
-              }
-            }}
-            onInputChange={(event, newInputValue) =>
-              setSearchValue(newInputValue)
-            }
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                handleSearch();
-              }
-            }}
-            options={geoLocationOptions}
-            getOptionLabel={(option) => {
-              const values = [option.name, option.state, option.country].filter(
-                (value) => value != null
-              );
-              return values.join(", ");
-            }}
-            value={
-              geoLocationOptions.find(
-                (opt) =>
-                  opt.lat === geoLocation[0] &&
-                  opt.lon === geoLocation[1] &&
-                  opt.state === opt.state
-              ) || null
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Enter a Location"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "white" },
-                    "&:hover fieldset": { borderColor: "white" },
-                    "&.Mui-focused fieldset": { borderColor: "white" },
-                  },
-                  "& .MuiInputLabel-root": {
+              sx={{
+                width: "100%",
+                "& .MuiAutocomplete-popupIndicator, & .MuiAutocomplete-clearIndicator":
+                  {
                     color: "white",
                   },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "white",
-                  },
-                  input: { color: "white" },
-                }}
-              />
-            )}
-            sx={{
-              width: "100%",
-              "& .MuiAutocomplete-popupIndicator, & .MuiAutocomplete-clearIndicator":
-                {
-                  color: "white",
-                },
-            }}
-          />
-
-          {weather ? (
-            <Weather
-              weather={weather}
-              geoLocation={geoLocation}
-              state={state}
+              }}
             />
-          ) : (
-            "Loading Weather"
-          )}
-          {forecastWeather ? (
-            <ForecastWeather {...forecastWeather} />
-          ) : (
-            "Forecast Loading"
-          )}
+
+            {weather ? (
+              <Weather
+                weather={weather}
+                geoLocation={geoLocation}
+                state={state}
+              />
+            ) : (
+              "Loading Weather"
+            )}
+            {forecastWeather ? (
+              <ForecastWeather {...forecastWeather} />
+            ) : (
+              "Forecast Loading"
+            )}
+          </div>
+          <Footer />
         </div>
       </div>
     </div>
