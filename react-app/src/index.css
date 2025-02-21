@@ -35,11 +35,18 @@ body {
 .dates {
   @apply flex justify-between px-16 py-6 my-4 gap-4;
 }
-
+.ai-description{
+  @apply border-1 bg-blue-400 p-6 my-4 rounded-3xl;
+  p{
+    @apply text-sm;
+  }
+  img{
+    @apply w-[72px] h-[72px] object-contain;
+  }
+}
 .weather-details {
   @apply px-8 py-4 text-sm bg-black rounded-3xl flex justify-between border-2 border-black transition-all duration-300 items-center leading-loose hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray];
 }
-
 .weather-details .title {
   @apply flex gap-2 text-base justify-center;
 }

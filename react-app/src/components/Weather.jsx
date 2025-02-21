@@ -5,36 +5,9 @@ import { LocationContext } from "../context/LocationContext";
 import { 
   faWater, faWind, faSnowflake, faDroplet, faSun, faGauge, faArrowUp, faArrowDown, faTemperature0 
 } from "@fortawesome/free-solid-svg-icons";
-
-const Weather = ({ weather, geoLocation}) => {
-  const backendUrl = "http://localhost:8080";
-  const { city, setCity, state, setState } = useContext(LocationContext);
-
-  useEffect(() => {
-    async function fetchCity() {
-      try {
-        if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
-          const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
-          const cityResponse = await fetch(url);
-
-          if (!cityResponse.ok) {
-            throw new Error(`API error: ${cityResponse.statusText}`);
-          }
-
-          const cityData = await cityResponse.json();
-          console.log(cityData)
-          setCity(cityData[0]?.name || "Unknown City");
-          setState(cityData[0]?.state || "")
-        } else {
-          console.warn("Invalid geolocation data");
-        }
-      } catch (err) {
-        console.error("Error fetching city:", err);
-        setCity("Error fetching city");
-      }
-    }
-    fetchCity();
-  }, [geoLocation]);
+import AIDescription from "./AIDescription";
+const Weather = ({ weather}) => {
+  const { city, state} = useContext(LocationContext);
 
   const getCountryName = (countryCode) => {
     const country = countryCodeLookup.byIso(countryCode.toUpperCase());
@@ -74,6 +47,7 @@ const Weather = ({ weather, geoLocation}) => {
           <h1>{weather.main.temp}°C</h1>
         </div>
       </div>
+      <AIDescription weather={weather} city={city} state={state}/>
       <div className="weather-details">
         <div className="temp-details">
           <div className="title">

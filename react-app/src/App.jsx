@@ -7,7 +7,6 @@ import Weather from "./components/Weather";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { LocationContext } from "./context/LocationContext";
-
 function App() {
   const hasMountedGeoLocation = useRef(false);
   const hasMountedCity = useRef(false);
@@ -51,6 +50,29 @@ function App() {
       }
     } catch (err) {
       console.error("Error fetching weather:", err);
+    }
+  }
+  async function fetchCity() {
+    try {
+      if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
+        const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
+        const cityResponse = await fetch(url);
+
+        if (!cityResponse.ok) {
+          throw new Error(`API error: ${cityResponse.statusText}`);
+        }
+
+        const cityData = await cityResponse.json();
+        console.log(cityData)
+        setCity(cityData[0]?.name || "Unknown City");
+        setState(cityData[0]?.state || "")
+        console.log(`City${city}`)
+        console.log(`State${state}`)
+      } else {
+        console.warn("Invalid geolocation data");
+      }
+    } catch (err) {
+      console.error("Error fetching city:", err);
     }
   }
   async function fetchGeoLocationBySearchQuery() {
@@ -116,11 +138,12 @@ function App() {
     }
 
     if (geoLocation !== null) {
+      console.log("reached")
+      fetchCity();
       fetchWeather();
       fetchForecastWeather();
     }
   }, [geoLocation]);
-
   // Fetch geolocation by city whenever city updates (but skip first render)
   useEffect(() => {
     if (!hasMountedCity.current) {
@@ -201,9 +224,8 @@ function App() {
             <Autocomplete
               onChange={(event, newValue) => {
                 if (newValue) {
-                  const { lat, lon, state } = newValue;
+                  const { lat, lon} = newValue;
                   setGeoLocation([lat, lon]);
-                  setState(state);
                 }
               }}
               onInputChange={(event, newInputValue) =>

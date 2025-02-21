@@ -6,6 +6,7 @@ require('dotenv').config();
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const port = process.env.PORT || 8080;
 
@@ -74,6 +75,22 @@ app.get("/getGeolocation", async (req, res) => {
       console.error("Error fetching geolocation:", error.message);
       res.status(500).json({ error: "Failed to fetch geolocation data" });
     }
+});
+// Get AI Description
+app.get("/getAIDescription", async (req, res) => {
+  try {
+    const { weather } = req.query
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `Create a brief description of weather with clothing recomendations according to ${weather} keep it under 500 characters, use metric system`;
+    const result = await model.generateContent(prompt);
+
+    res.send(result.response.text()); // Fixed AI response handling
+  } catch (error) {
+    console.error("Error generating response:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
