@@ -1,12 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Sora:wght@100..800&family=Tiro+Gurmukhi:ital@0;1&display=swap");
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-weather-details: 700px;
+  --breakpoint-weather-details-small: 400px;
+  --breakpoint-forecast-col: 530px;
+  --breakpoint-weather-overview-1: 450px;
+  --breakpoint-weather-overview-2: 400px;
+  --breakpoint-weather-overview-3: 350px;
+}
+
 body {
   font-family: "Sora", serif;
 }
 
 .app {
-  @apply flex flex-col text-center justify-center items-center max-w-2xl mx-auto p-4 space-y-3 text-white min-h-screen;
+  @apply flex flex-col text-center justify-center items-center max-w-[800px] mx-auto p-4 space-y-3 text-white min-h-screen;
 
   position: relative;
   z-index: 2;
@@ -14,45 +23,56 @@ body {
 }
 
 .app-container {
-  @apply flex flex-col rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500/70 px-16 py-4;
+  @apply flex flex-col rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500/70 w-full py-4 px-8 lg:px-16;
 }
 
 .search {
-  @apply border-2 rounded-xl px-4 w-full py-2;
+  @apply lg:w-full py-2;
 }
 
 .weather-overview {
   @apply my-4 gap-y-3;
   h1 {
-    @apply text-3xl sm:text-6xl;
+    @apply text-xl weather-overview-3:text-2xl weather-overview-2:text-3xl weather-overview-1:text-4xl sm:text-6xl;
   }
 
   p {
-    @apply text-lg sm:text-2xl;
+    @apply text-sm weather-overview-3:text-base weather-overview-2:text-lg weather-overview-1:text-xl sm:text-2xl;
   }
 }
 
 .dates {
-  @apply flex px-16 py-6 my-4 gap-4;
+  @apply flex px-4 sm:px-16 py-6 my-4 gap-4;
 }
-.ai-description{
-  @apply border-1 bg-blue-400 p-6 my-4 rounded-3xl;
-  p{
+
+.ai-description {
+  @apply bg-cyan-700 px-4 pt-3 my-4 rounded-3xl border-2 border-cyan-700 transition-all duration-300 hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray];
+  p {
     @apply text-sm;
   }
-  img{
-    @apply w-[72px] h-[72px] object-contain;
+  img {
+    @apply w-[80px] h-[80px] object-contain;
+  }
+  .ai-footer {
+    @apply text-xs;
   }
 }
+
 .weather-details {
-  @apply px-8 py-4 text-sm bg-black rounded-3xl flex justify-between border-2 border-black transition-all duration-300 items-center leading-loose hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray];
+  @apply flex flex-col weather-details:flex-row px-8 py-4 text-xs weather-details-small:text-sm bg-black rounded-3xl justify-between border-2 border-black transition-all duration-300 items-center leading-loose hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray];
 }
 .weather-details .title {
   @apply flex gap-2 text-base justify-center;
 }
+
 .temp-details {
-  @apply flex-col justify-center items-center;
+  @apply flex-col justify-center items-center mb-1;
 }
+
+.temp-details .title {
+  @apply flex items-center;
+}
+
 .temp-details .high {
   @apply text-green-500;
 }
@@ -60,15 +80,21 @@ body {
 .temp-details .low {
   @apply text-red-500;
 }
+
 .temp-details .feels {
   @apply text-blue-500;
 }
+
 .wind {
-  @apply flex-col justify-center items-center;
+  @apply flex-col justify-center items-center mt-1 mb-1;
+}
+
+.wind .title {
+  @apply flex items-center;
 }
 
 .humidity-precipitation {
-  @apply flex-col justify-center items-center;
+  @apply flex-col justify-center items-center mt-1;
 }
 
 .humidity-precipitation .label {
@@ -76,20 +102,21 @@ body {
 }
 
 .forecast {
-  @apply bg-cyan-700 rounded-4xl p-4 mt-4 border-2 border-cyan-700 transition-all duration-300 hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray];
+  @apply flex flex-col bg-cyan-700 rounded-4xl p-4 mt-4 border-2 border-cyan-700 transition-all duration-300 hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray] justify-center;
   h1 {
     @apply text-2xl sm:text-3xl mb-4;
   }
   p {
-    @apply text-sm;
+    @apply text-xs sm:text-sm;
   }
 }
+
 .forecast-container {
-  @apply flex flex-row text-center opacity-90 space-x-1 p-2 w-[600px] overflow-x-scroll;
+  @apply flex flex-col sm:flex-row text-center opacity-90 space-x-1 p-2 max-h-[300px] sm:max-h-none overflow-y-auto sm:overflow-x-auto;
 }
 
 .forecast-entry {
-  @apply w-auto max-w-[400px] px-4;
+  @apply flex flex-col forecast-col:flex-row gap-1 sm:gap-0 sm:flex-col max-w-[80vw] w-auto sm:max-w-[400px] px-4 items-center justify-center sm:border-0 mt-1 mb-1;
 
   .icon {
     @apply w-[72px] h-[72px] object-contain;

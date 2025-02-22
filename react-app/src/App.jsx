@@ -55,20 +55,16 @@ function App() {
   async function fetchCity() {
     try {
       if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
-        console.log(`Fetching city with lat: ${geoLocation[0]}, lon: ${geoLocation[1]}`);
-  
         const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
         const cityResponse = await fetch(url);
-  
+
         if (!cityResponse.ok) {
           throw new Error(`API error: ${cityResponse.statusText}`);
         }
-  
+
         const cityData = await cityResponse.json();
-        console.log("Fetched city data:", cityData);
-  
+
         if (cityData.length > 0) {
-          console.log(`Setting city to: ${cityData[0].name}, state to: ${cityData[0].state}`);
           setCity(cityData[0].name);
           setState(cityData[0].state);
         }
@@ -136,18 +132,11 @@ function App() {
 
   // Fetch weather whenever geoLocation updates (but skip first render)
   useEffect(() => {
-      fetchCity();
-      fetchWeather();
-      fetchForecastWeather();
+    fetchCity();
+    fetchWeather();
+    fetchForecastWeather();
   }, [geoLocation]);
-  useEffect(() => {
-    console.log("City updated in useEffect:", city);
-  }, [city]);
-  
-  useEffect(() => {
-    console.log("State updated in useEffect:", state);
-  }, [state]);
-  
+
   // Fetch geolocation by city whenever city updates (but skip first render)
   useEffect(() => {
     if (!hasMountedCity.current) {
@@ -205,46 +194,46 @@ function App() {
         <div className="app-container">
           <Header />
           <div className="flex-1">
-            {weather?
-            (<div className="dates justify-between">
-              <div>
-                <p>Local</p>
-                <CurrentDate />
+            {weather ? (
+              <div className="dates justify-between">
+                <div>
+                  <p>Local</p>
+                  <CurrentDate />
+                </div>
+                <div>
+                  <p>
+                    {city} {state ? `, ${state}` : ""}
+                    {weather && weather.sys.country
+                      ? `, ${weather.sys.country}`
+                      : ""}
+                  </p>
+                  {weather ? (
+                    <LocationDate timezoneOffset={weather.timezone} />
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
-              <div>
-                <p>
-                  {city} {state ? `, ${state}` : ""}
-                  {weather && weather.sys.country
-                    ? `, ${weather.sys.country}`
-                    : ""}
-                </p>
-                {weather ? (
-                  <LocationDate timezoneOffset={weather.timezone} />
-                ) : (
-                  ""
-                )}
+            ) : (
+              <div className="dates justify-center">
+                <div>
+                  <p>Local</p>
+                  <CurrentDate />
+                </div>
+                <div>
+                  <p>
+                    {city} {state ? `, ${state}` : ""}
+                    {weather && weather.sys.country
+                      ? `, ${weather.sys.country}`
+                      : ""}
+                  </p>
+                </div>
               </div>
-            </div>)
-            :
-            (<div className="dates justify-center">
-              <div>
-                <p>Local</p>
-                <CurrentDate />
-              </div>
-              <div>
-                <p>
-                  {city} {state ? `, ${state}` : ""}
-                  {weather && weather.sys.country
-                    ? `, ${weather.sys.country}`
-                    : ""}
-                </p>
-              </div>
-            </div>)
-            }
+            )}
             <Autocomplete
               onChange={(event, newValue) => {
                 if (newValue) {
-                  const { lat, lon} = newValue;
+                  const { lat, lon } = newValue;
                   setGeoLocation([lat, lon]);
                 }
               }}
@@ -302,18 +291,8 @@ function App() {
               }}
             />
 
-            {weather ? (
-              <Weather
-                weather={weather}
-              />
-            ) : (
-              ""
-            )}
-            {forecastWeather ? (
-              <ForecastWeather {...forecastWeather} />
-            ) : (
-              ""
-            )}
+            {weather ? <Weather weather={weather} /> : ""}
+            {forecastWeather ? <ForecastWeather {...forecastWeather} /> : ""}
           </div>
           <Footer />
         </div>

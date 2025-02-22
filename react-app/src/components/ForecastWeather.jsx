@@ -11,16 +11,27 @@ const ForecastWeather = (forecastWeather) => {
     "Saturday",
   ];
   const monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
   const getDayFromTimestamp = (dt_txt) => {
     const date = new Date(dt_txt);
     return dayNames[date.getDay()];
   };
   const getDateFromTimestamp = (dt_txt) => {
-    const date = new Date(dt_txt)
-    return monthNames[date.getMonth()] + " " + date.getDate()
-  }
+    const date = new Date(dt_txt);
+    return monthNames[date.getMonth()] + " " + date.getDate();
+  };
   const formatTime = (dt_txt) => {
     const date = new Date(dt_txt);
     let hours = date.getHours();
@@ -44,21 +55,26 @@ const ForecastWeather = (forecastWeather) => {
     const forecastElements = [];
     for (let i = 0; i < forecastWeather.list.length; i++) {
       forecastElements.push(
-        <div key={i + "forecast"} className="forecast-entry">
-          <p>{getDayFromTimestamp(forecastWeather.list[i].dt_txt)}</p>
-          <p>{getDateFromTimestamp(forecastWeather.list[i].dt_txt)}</p>
-          <p>{formatTime(forecastWeather.list[i].dt_txt).time}</p>
-          <p>{formatTime(forecastWeather.list[i].dt_txt).period}</p>
-          <div className="flex justify-center items-center w-[80px] h-[80px]">
-            <img
-              src={`https://openweathermap.org/img/wn/${forecastWeather.list[i].weather[0].icon}@2x.png`}
-              alt="weather-icon"
-              className="w-[72px] h-[72px] object-contain"
-            />
+        <div className="flex flex-col">
+          <div key={i + "forecast"} className="forecast-entry">
+            <p>{getDayFromTimestamp(forecastWeather.list[i].dt_txt)}</p>
+            <p>{getDateFromTimestamp(forecastWeather.list[i].dt_txt)}</p>
+            <p>{formatTime(forecastWeather.list[i].dt_txt).time}</p>
+            <p>{formatTime(forecastWeather.list[i].dt_txt).period}</p>
+            <div className="flex justify-center items-center w-[80px] h-[80px]">
+              <img
+                src={`https://openweathermap.org/img/wn/${forecastWeather.list[i].weather[0].icon}@2x.png`}
+                alt="weather-icon"
+                className="w-[72px] h-[72px] object-contain"
+              />
+            </div>
+            <p className="ppt-value">
+              ppt: {getPrecipitation(forecastWeather.list[i])} mm/h
+            </p>
           </div>
-          <p className="ppt-value">
-            ppt: {getPrecipitation(forecastWeather.list[i])} mm/h
-          </p>
+          {i < forecastWeather.list.length - 1 && (
+            <div className="block sm:hidden bg-white h-0.5 border-0" />
+          )}
         </div>
       );
     }
@@ -66,13 +82,11 @@ const ForecastWeather = (forecastWeather) => {
   };
 
   return (
-  <div className="forecast">
-    <h1>5 Day / 3 Hour Forecast</h1>
-    <div className="forecast-container">
-      {renderForecast()}
+    <div className="forecast">
+      <h1>5 Day / 3 Hour Forecast</h1>
+      <div className="forecast-container">{renderForecast()}</div>
     </div>
-  </div>
-  )
+  );
 };
 
 export default ForecastWeather;
