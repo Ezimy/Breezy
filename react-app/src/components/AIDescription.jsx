@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import logo from '/Google_Gemini_logo.png'
+
 const AIDescription = ({ weather, city, state }) => {
   const backendUrl = "http://localhost:8080";
   const [weatherInformation, setWeatherInformation] = useState("");
   const [description, setDescription] = useState("");
 
   // Function to create weather information string
-  const createWeatherInformation = async (weather) => {
+  useEffect(() => {
+    if (!weather || !city) return; // Ensure weather and city are available
+  
     const weatherText = `
       Country: ${weather.sys.country},
       City: ${city},
@@ -30,7 +33,7 @@ const AIDescription = ({ weather, city, state }) => {
     `;
 
     setWeatherInformation(weatherText);
-  };
+  }, [weather, city, state]);
 
   // Fetch AI description after weatherInformation is set
   useEffect(() => {
@@ -51,13 +54,6 @@ const AIDescription = ({ weather, city, state }) => {
 
     fetchDescription();
   }, [weatherInformation]); // Now fetch only when weatherInformation updates
-
-  // Create weather information when `weather` changes
-  useEffect(() => {
-    setTimeout(()=>{
-        createWeatherInformation(weather);
-    },1000)
-  }, [weather]); // Run only when `weather` changes
 
   return (
     <div className="ai-description">

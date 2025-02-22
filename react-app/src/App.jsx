@@ -55,19 +55,23 @@ function App() {
   async function fetchCity() {
     try {
       if (geoLocation?.length === 2 && geoLocation[0] && geoLocation[1]) {
+        console.log(`Fetching city with lat: ${geoLocation[0]}, lon: ${geoLocation[1]}`);
+  
         const url = `${backendUrl}/getCityByGeolocation?lat=${geoLocation[0]}&lon=${geoLocation[1]}`;
         const cityResponse = await fetch(url);
-
+  
         if (!cityResponse.ok) {
           throw new Error(`API error: ${cityResponse.statusText}`);
         }
-
+  
         const cityData = await cityResponse.json();
-        console.log(cityData)
-        setCity(cityData[0]?.name || "Unknown City");
-        setState(cityData[0]?.state || "")
-        console.log(`City${city}`)
-        console.log(`State${state}`)
+        console.log("Fetched city data:", cityData);
+  
+        if (cityData.length > 0) {
+          console.log(`Setting city to: ${cityData[0].name}, state to: ${cityData[0].state}`);
+          setCity(cityData[0].name);
+          setState(cityData[0].state);
+        }
       } else {
         console.warn("Invalid geolocation data");
       }
@@ -132,18 +136,18 @@ function App() {
 
   // Fetch weather whenever geoLocation updates (but skip first render)
   useEffect(() => {
-    if (!hasMountedGeoLocation.current) {
-      hasMountedGeoLocation.current = true; // Mark it as mounted
-      return; // Skip execution on mount
-    }
-
-    if (geoLocation !== null) {
-      console.log("reached")
       fetchCity();
       fetchWeather();
       fetchForecastWeather();
-    }
   }, [geoLocation]);
+  useEffect(() => {
+    console.log("City updated in useEffect:", city);
+  }, [city]);
+  
+  useEffect(() => {
+    console.log("State updated in useEffect:", state);
+  }, [state]);
+  
   // Fetch geolocation by city whenever city updates (but skip first render)
   useEffect(() => {
     if (!hasMountedCity.current) {
@@ -301,7 +305,6 @@ function App() {
             {weather ? (
               <Weather
                 weather={weather}
-                geoLocation={geoLocation}
               />
             ) : (
               ""
