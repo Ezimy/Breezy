@@ -17,7 +17,7 @@ function App() {
   const [geoLocation, setGeoLocation] = useState([null, null]); // [lat, lon]
   const [forecastWeather, setForecastWeather] = useState(null);
   const [geoLocationOptions, setGeoLocationOptions] = useState([]);
-  const backendUrl = "http://localhost:8080";
+  const backendUrl = "https://backend-tsnw4f2fda-pd.a.run.app";
 
   // Use JS navigator.geolocation to get device location
   const getLocation = () => {

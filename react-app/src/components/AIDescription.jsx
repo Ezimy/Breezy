@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import logo from "/Google_Gemini_logo.png";
 
 const AIDescription = ({ weather, city, state }) => {
-  const backendUrl = "http://localhost:8080";
+  const backendUrl = "https://backend-tsnw4f2fda-pd.a.run.app";
   const [weatherInformation, setWeatherInformation] = useState("");
   const [description, setDescription] = useState("");
 

@@ -15,10 +15,17 @@ RUN npm run build
 # Use Nginx to serve the built React app
 FROM nginx:alpine
 
-# Copy the build folder to Nginx's default web directory
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Set working directory for Nginx
+WORKDIR /usr/share/nginx/html
 
-# Expose the correct Nginx port
+# Copy the build folder to Nginx's default web directory
+COPY --from=builder /app/dist .
+
+# Remove default Nginx config and replace with a custom one
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose the correct Cloud Run port
 EXPOSE 80
 
 # Start Nginx
