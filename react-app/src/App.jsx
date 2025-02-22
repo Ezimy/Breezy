@@ -201,7 +201,8 @@ function App() {
         <div className="app-container">
           <Header />
           <div className="flex-1">
-            <div className="dates">
+            {weather?
+            (<div className="dates justify-between">
               <div>
                 <p>Local</p>
                 <CurrentDate />
@@ -216,11 +217,26 @@ function App() {
                 {weather ? (
                   <LocationDate timezoneOffset={weather.timezone} />
                 ) : (
-                  "Loading Time"
+                  ""
                 )}
               </div>
-            </div>
-
+            </div>)
+            :
+            (<div className="dates justify-center">
+              <div>
+                <p>Local</p>
+                <CurrentDate />
+              </div>
+              <div>
+                <p>
+                  {city} {state ? `, ${state}` : ""}
+                  {weather && weather.sys.country
+                    ? `, ${weather.sys.country}`
+                    : ""}
+                </p>
+              </div>
+            </div>)
+            }
             <Autocomplete
               onChange={(event, newValue) => {
                 if (newValue) {
@@ -288,12 +304,12 @@ function App() {
                 geoLocation={geoLocation}
               />
             ) : (
-              "Loading Weather"
+              ""
             )}
             {forecastWeather ? (
               <ForecastWeather {...forecastWeather} />
             ) : (
-              "Forecast Loading"
+              ""
             )}
           </div>
           <Footer />

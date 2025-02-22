@@ -14,7 +14,7 @@ body {
 }
 
 .app-container {
-  @apply flex flex-col rounded-lg bg-gradient-to-r from-cyan-900 to-blue-900/70 px-16 py-4;
+  @apply flex flex-col rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500/70 px-16 py-4;
 }
 
 .search {
@@ -33,7 +33,7 @@ body {
 }
 
 .dates {
-  @apply flex justify-between px-16 py-6 my-4 gap-4;
+  @apply flex px-16 py-6 my-4 gap-4;
 }
 .ai-description{
   @apply border-1 bg-blue-400 p-6 my-4 rounded-3xl;
@@ -76,7 +76,7 @@ body {
 }
 
 .forecast {
-  @apply bg-blue-600 rounded-4xl p-4 mt-4 border-2 border-blue-600 transition-all duration-300 hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray];
+  @apply bg-cyan-700 rounded-4xl p-4 mt-4 border-2 border-cyan-700 transition-all duration-300 hover:border-gray-500 hover:shadow-[0px_0px_5px_1px_gray];
   h1 {
     @apply text-2xl sm:text-3xl mb-4;
   }
@@ -101,11 +101,11 @@ body {
 }
 
 .forecast-container::-webkit-scrollbar-track {
-  @apply bg-blue-200 rounded-2xl;
+  @apply bg-cyan-200 rounded-2xl;
 }
 
 .forecast-container::-webkit-scrollbar-thumb {
-  @apply bg-blue-900 rounded-2xl;
+  @apply bg-cyan-900 rounded-2xl;
 }
 
 .forecast-container::-webkit-scrollbar-thumb:hover {
